@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Smart Social Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">💰</span>
+                    <a href="index.html" class="text-2xl font-bold text-white">Smart Social Wallet</a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white/80 hover:text-purple-300 transition duration-300">Home</a>
+                    <a href="features.html" class="text-white hover:text-purple-300 transition duration-300 font-semibold">Features</a>
+                    <a href="split-bill.html" class="text-white/80 hover:text-purple-300 transition duration-300">Bill Split</a>
+                    <a href="expense-tracker.html" class="text-white/80 hover:text-purple-300 transition duration-300">Tracker</a>
+                    <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
+                    <a href="rewards.html" class="text-white/80 hover:text-purple-300 transition duration-300">Rewards</a>
+                    <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                </div>
+                <button class="md:hidden text-white" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <div class="hidden md:hidden mt-4 space-y-2" id="mobileMenu">
+                <a href="index.html" class="block text-white hover:text-purple-300 transition">Home</a>
+                <a href="features.html" class="block text-white hover:text-purple-300 transition">Features</a>
+                <a href="split-bill.html" class="block text-white/80 hover:text-purple-300 transition">Bill Split</a>
+                <a href="expense-tracker.html" class="block text-white/80 hover:text-purple-300 transition">Tracker</a>
+                <a href="ai-assistant.html" class="block text-white/80 hover:text-purple-300 transition">AI Assistant</a>
+                <a href="rewards.html" class="block text-white/80 hover:text-purple-300 transition">Rewards</a>
+                <a href="contact.html" class="block text-white/80 hover:text-purple-300 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 py-20 text-center">
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">Our Features</h1>
+        <p class="text-xl md:text-2xl text-purple-200 max-w-2xl mx-auto">
+            Everything you need to manage money socially and smartly
+        </p>
+    </section>
+
+    <!-- Feature 1: AI Assistant -->
+    <section class="container mx-auto px-4 py-16 scroll-smooth" id="ai-assistant">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/20 hover:shadow-2xl hover:shadow-purple-500/30 transition duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="text-8xl mb-6">🤖</div>
+                    <h2 class="text-4xl font-bold text-white mb-4">AI-Powered Assistant</h2>
+                    <p class="text-purple-200 text-lg mb-4">
+                        Get personalized money tips, spending insights, and budget guidance powered by advanced AI. Our assistant learns your spending patterns and helps you make smarter financial decisions.
+                    </p>
+                    <ul class="space-y-2 text-purple-200 mb-6">
+                        <li class="flex items-center"><span class="mr-2">✨</span> Personalized spending analysis</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Smart budget recommendations</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Real-time financial insights</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> 24/7 chat support</li>
+                    </ul>
+                    <a href="ai-assistant.html" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                        Try AI Assistant →
+                    </a>
+                </div>
+                <div class="bg-gradient-to-br from-purple-600/30 to-blue-600/30 rounded-2xl p-8 text-center">
+                    <div class="text-6xl mb-4">💬</div>
+                    <p class="text-white text-lg">Chat with AI anytime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 2: Bill Splitting -->
+    <section class="container mx-auto px-4 py-16 scroll-smooth" id="bill-splitting">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/20 hover:shadow-2xl hover:shadow-purple-500/30 transition duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="order-2 md:order-1 bg-gradient-to-br from-blue-600/30 to-purple-600/30 rounded-2xl p-8 text-center">
+                    <div class="text-6xl mb-4">📱</div>
+                    <p class="text-white text-lg">Scan & Split instantly</p>
+                </div>
+                <div class="order-1 md:order-2">
+                    <div class="text-8xl mb-6">💸</div>
+                    <h2 class="text-4xl font-bold text-white mb-4">Smart Bill Splitting</h2>
+                    <p class="text-purple-200 text-lg mb-4">
+                        Split bills easily with friends for food, rent, shopping, parties, or travel. Scan receipts with OCR technology, auto-calculate amounts, and send reminders to friends.
+                    </p>
+                    <ul class="space-y-2 text-purple-200 mb-6">
+                        <li class="flex items-center"><span class="mr-2">✨</span> Multiple scenarios (Food, Rent, Shopping)</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Receipt scanning with OCR</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Auto-calculation of splits</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Send notifications to friends</li>
+                    </ul>
+                    <a href="split-bill.html" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                        Split a Bill →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 3: Expense Tracker -->
+    <section class="container mx-auto px-4 py-16 scroll-smooth" id="expense-tracker">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/20 hover:shadow-2xl hover:shadow-purple-500/30 transition duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="text-8xl mb-6">📊</div>
+                    <h2 class="text-4xl font-bold text-white mb-4">Expense Tracker</h2>
+                    <p class="text-purple-200 text-lg mb-4">
+                        Log expenses, view category-wise charts, get saving reminders, and participate in peer challenges. Track your spending patterns and achieve your financial goals.
+                    </p>
+                    <ul class="space-y-2 text-purple-200 mb-6">
+                        <li class="flex items-center"><span class="mr-2">✨</span> Category-wise expense tracking</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Interactive charts and analytics</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Saving reminders and goals</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Peer challenges and leaderboard</li>
+                    </ul>
+                    <a href="expense-tracker.html" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                        Track Expenses →
+                    </a>
+                </div>
+                <div class="bg-gradient-to-br from-green-600/30 to-blue-600/30 rounded-2xl p-8 text-center">
+                    <div class="text-6xl mb-4">📈</div>
+                    <p class="text-white text-lg">Visualize your spending</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature 4: Gamified Rewards -->
+    <section class="container mx-auto px-4 py-16 scroll-smooth" id="rewards">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/20 hover:shadow-2xl hover:shadow-purple-500/30 transition duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="order-2 md:order-1 bg-gradient-to-br from-yellow-600/30 to-orange-600/30 rounded-2xl p-8 text-center">
+                    <div class="text-6xl mb-4">🏅</div>
+                    <p class="text-white text-lg">Earn badges & compete</p>
+                </div>
+                <div class="order-1 md:order-2">
+                    <div class="text-8xl mb-6">🏆</div>
+                    <h2 class="text-4xl font-bold text-white mb-4">Gamified Rewards</h2>
+                    <p class="text-purple-200 text-lg mb-4">
+                        Learn about finance, stocks, and investments through interactive quizzes. Earn badges like Smart Saver, Stock Explorer, and Budget Hero. Compete with friends and level up your financial knowledge.
+                    </p>
+                    <ul class="space-y-2 text-purple-200 mb-6">
+                        <li class="flex items-center"><span class="mr-2">✨</span> Interactive financial quizzes</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Earn XP and unlock badges</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Leaderboards and competitions</li>
+                        <li class="flex items-center"><span class="mr-2">✨</span> Learn finance while having fun</li>
+                    </ul>
+                    <a href="rewards.html" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                        Earn Rewards →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="container mx-auto px-4 py-16 text-center">
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-3xl p-12">
+            <h2 class="text-4xl font-bold text-white mb-4">Ready to Get Started?</h2>
+            <p class="text-xl text-purple-100 mb-8">Join thousands of Gen Z users managing money smarter</p>
+            <a href="split-bill.html" class="inline-block bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                Start Now 🚀
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">💰</span>
+                        <span class="text-xl font-bold text-white">Smart Social Wallet</span>
+                    </div>
+                    <p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+

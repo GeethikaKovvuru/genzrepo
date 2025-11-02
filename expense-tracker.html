@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - Smart Social Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">💰</span>
+                    <a href="index.html" class="text-2xl font-bold text-white">Smart Social Wallet</a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white/80 hover:text-purple-300 transition duration-300">Home</a>
+                    <a href="features.html" class="text-white/80 hover:text-purple-300 transition duration-300">Features</a>
+                    <a href="split-bill.html" class="text-white/80 hover:text-purple-300 transition duration-300">Bill Split</a>
+                    <a href="expense-tracker.html" class="text-white hover:text-purple-300 transition duration-300 font-semibold">Tracker</a>
+                    <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
+                    <a href="rewards.html" class="text-white/80 hover:text-purple-300 transition duration-300">Rewards</a>
+                    <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                </div>
+                <button class="md:hidden text-white" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <div class="hidden md:hidden mt-4 space-y-2" id="mobileMenu">
+                <a href="index.html" class="block text-white hover:text-purple-300 transition">Home</a>
+                <a href="features.html" class="block text-white/80 hover:text-purple-300 transition">Features</a>
+                <a href="split-bill.html" class="block text-white/80 hover:text-purple-300 transition">Bill Split</a>
+                <a href="expense-tracker.html" class="block text-white hover:text-purple-300 transition">Tracker</a>
+                <a href="ai-assistant.html" class="block text-white/80 hover:text-purple-300 transition">AI Assistant</a>
+                <a href="rewards.html" class="block text-white/80 hover:text-purple-300 transition">Rewards</a>
+                <a href="contact.html" class="block text-white/80 hover:text-purple-300 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="container mx-auto px-4 py-12">
+        <h1 class="text-5xl font-bold text-white text-center mb-4">📊 Expense Tracker</h1>
+        <p class="text-xl text-purple-200 text-center mb-8">Track your spending and achieve your financial goals</p>
+
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div class="text-purple-300 text-sm mb-2">Total Spending (This Month)</div>
+                <div class="text-3xl font-bold text-white" id="totalSpending">₹0</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div class="text-purple-300 text-sm mb-2">Monthly Budget</div>
+                <div class="text-3xl font-bold text-white">₹10,000</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                <div class="text-purple-300 text-sm mb-2">Remaining Budget</div>
+                <div class="text-3xl font-bold text-white" id="remainingBudget">₹10,000</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Add Expense Form -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">➕ Add Expense</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-white mb-2 block">Category</label>
+                            <select id="expenseCategory" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option value="food">🍕 Food</option>
+                                <option value="transport">🚗 Transport</option>
+                                <option value="shopping">🛍️ Shopping</option>
+                                <option value="entertainment">🎬 Entertainment</option>
+                                <option value="bills">⚡ Bills</option>
+                                <option value="other">📦 Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-white mb-2 block">Amount (₹)</label>
+                            <input type="number" id="expenseAmount" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50" placeholder="Enter amount">
+                        </div>
+                        <div>
+                            <label class="text-white mb-2 block">Date</label>
+                            <input type="date" id="expenseDate" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <button id="addExpenseBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition duration-300">
+                            Add Expense
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🔔 Notifications</h2>
+                    <div id="notificationsList" class="space-y-3">
+                        <div class="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-3">
+                            <p class="text-white text-sm">💡 Save ₹500 this week to hit your goal!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peer Challenges -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20">
+                    <h2 class="text-2xl font-bold text-white mb-4">🎯 Peer Challenges</h2>
+                    <div class="space-y-3">
+                        <div class="bg-purple-600/30 border border-purple-500/50 rounded-lg p-3">
+                            <p class="text-white text-sm font-semibold">Save more than your friend this week!</p>
+                            <div class="mt-2 flex items-center space-x-2">
+                                <div class="flex-1 bg-white/20 rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                                <span class="text-white text-xs">60%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Expenses List -->
+            <div class="lg:col-span-2">
+                <!-- Chart -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Category Breakdown</h2>
+                    <canvas id="expenseChart" class="max-h-64"></canvas>
+                </div>
+
+                <!-- Expenses List -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Recent Expenses</h2>
+                    <div id="expensesList" class="space-y-3">
+                        <p class="text-white/50 text-center py-8">No expenses added yet. Add your first expense above!</p>
+                    </div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20">
+                    <h2 class="text-2xl font-bold text-white mb-4">🏆 Top Savers Leaderboard</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-gradient-to-r from-yellow-600/30 to-orange-600/30 rounded-lg p-4 border border-yellow-500/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🥇</span>
+                                <div>
+                                    <div class="text-white font-semibold">Priya S.</div>
+                                    <div class="text-purple-200 text-sm">Saved ₹15,000</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-gradient-to-r from-gray-400/30 to-gray-500/30 rounded-lg p-4 border border-gray-400/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🥈</span>
+                                <div>
+                                    <div class="text-white font-semibold">Rahul K.</div>
+                                    <div class="text-purple-200 text-sm">Saved ₹12,500</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-gradient-to-r from-orange-600/30 to-red-600/30 rounded-lg p-4 border border-orange-500/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🥉</span>
+                                <div>
+                                    <div class="text-white font-semibold">Aisha M.</div>
+                                    <div class="text-purple-200 text-sm">Saved ₹10,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">💰</span>
+                        <span class="text-xl font-bold text-white">Smart Social Wallet</span>
+                    </div>
+                    <p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/expense-tracker.js"></script>
+</body>
+</html>
+

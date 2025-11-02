@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bill Splitting - Smart Social Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">💰</span>
+                    <a href="index.html" class="text-2xl font-bold text-white">Smart Social Wallet</a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white/80 hover:text-purple-300 transition duration-300">Home</a>
+                    <a href="features.html" class="text-white/80 hover:text-purple-300 transition duration-300">Features</a>
+                    <a href="split-bill.html" class="text-white hover:text-purple-300 transition duration-300 font-semibold">Bill Split</a>
+                    <a href="expense-tracker.html" class="text-white/80 hover:text-purple-300 transition duration-300">Tracker</a>
+                    <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
+                    <a href="rewards.html" class="text-white/80 hover:text-purple-300 transition duration-300">Rewards</a>
+                    <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                </div>
+                <button class="md:hidden text-white" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <div class="hidden md:hidden mt-4 space-y-2" id="mobileMenu">
+                <a href="index.html" class="block text-white hover:text-purple-300 transition">Home</a>
+                <a href="features.html" class="block text-white/80 hover:text-purple-300 transition">Features</a>
+                <a href="split-bill.html" class="block text-white hover:text-purple-300 transition">Bill Split</a>
+                <a href="expense-tracker.html" class="block text-white/80 hover:text-purple-300 transition">Tracker</a>
+                <a href="ai-assistant.html" class="block text-white/80 hover:text-purple-300 transition">AI Assistant</a>
+                <a href="rewards.html" class="block text-white/80 hover:text-purple-300 transition">Rewards</a>
+                <a href="contact.html" class="block text-white/80 hover:text-purple-300 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="container mx-auto px-4 py-12">
+        <h1 class="text-5xl font-bold text-white text-center mb-4">💸 Smart Bill Splitting</h1>
+        <p class="text-xl text-purple-200 text-center mb-8">Split bills easily with friends in just a few steps</p>
+
+        <!-- Progress Bar -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold step-indicator" data-step="1">1</div>
+                    <span class="text-white hidden sm:inline">Scenario</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold step-indicator" data-step="2">2</div>
+                    <span class="text-white hidden sm:inline">Friends</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold step-indicator" data-step="3">3</div>
+                    <span class="text-white hidden sm:inline">Items</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold step-indicator" data-step="4">4</div>
+                    <span class="text-white hidden sm:inline">Receipt</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold step-indicator" data-step="5">5</div>
+                    <span class="text-white hidden sm:inline">Summary</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Select Scenario -->
+        <div class="max-w-4xl mx-auto step-content" id="step1">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 class="text-3xl font-bold text-white mb-6">Select a Scenario</h2>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <button class="scenario-btn bg-gradient-to-br from-purple-600 to-blue-600 text-white p-6 rounded-2xl hover:scale-110 transform transition duration-300 font-semibold" data-scenario="food">
+                        <div class="text-4xl mb-2">🍕</div>
+                        Food
+                    </button>
+                    <button class="scenario-btn bg-gradient-to-br from-purple-600 to-blue-600 text-white p-6 rounded-2xl hover:scale-110 transform transition duration-300 font-semibold" data-scenario="rent">
+                        <div class="text-4xl mb-2">🏠</div>
+                        Rent
+                    </button>
+                    <button class="scenario-btn bg-gradient-to-br from-purple-600 to-blue-600 text-white p-6 rounded-2xl hover:scale-110 transform transition duration-300 font-semibold" data-scenario="shopping">
+                        <div class="text-4xl mb-2">🛍️</div>
+                        Shopping
+                    </button>
+                    <button class="scenario-btn bg-gradient-to-br from-purple-600 to-blue-600 text-white p-6 rounded-2xl hover:scale-110 transform transition duration-300 font-semibold" data-scenario="party">
+                        <div class="text-4xl mb-2">🎉</div>
+                        Party
+                    </button>
+                    <button class="scenario-btn bg-gradient-to-br from-purple-600 to-blue-600 text-white p-6 rounded-2xl hover:scale-110 transform transition duration-300 font-semibold" data-scenario="travel">
+                        <div class="text-4xl mb-2">✈️</div>
+                        Travel
+                    </button>
+                </div>
+                <div class="mt-6">
+                    <span class="text-white font-semibold">Selected: </span>
+                    <span class="text-purple-300 text-xl" id="selectedScenario">None</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Add Friends -->
+        <div class="max-w-4xl mx-auto step-content hidden" id="step2">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 class="text-3xl font-bold text-white mb-6">Add Friends</h2>
+                <div class="mb-6">
+                    <label class="text-white text-lg mb-2 block">Number of Friends</label>
+                    <input type="number" id="friendCount" min="1" max="10" value="2" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <button id="generateFriendFields" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300 mb-6">
+                    Generate Fields
+                </button>
+                <div id="friendFields" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Step 3: Add Items -->
+        <div class="max-w-4xl mx-auto step-content hidden" id="step3">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 class="text-3xl font-bold text-white mb-6">Add Items</h2>
+                <div class="space-y-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="itemName" placeholder="Item name" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                        <input type="number" id="itemAmount" placeholder="Amount (₹)" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                    </div>
+                    <div>
+                        <label class="text-white text-sm mb-2 block">Who Paid for This Item?</label>
+                        <select id="itemBuyer" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" style="color: white;">
+                            <option value="" style="color: #1f2937; background: white;">Select Buyer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-white text-sm mb-2 block">Who is Sharing/Accessing This Item? (Select all that apply)</label>
+                        <div id="itemUsers" class="space-y-2 p-4 bg-white/10 rounded-lg border border-white/20 max-h-48 overflow-y-auto custom-scrollbar">
+                            <p class="text-purple-200 text-sm">Add friends first to see sharing options</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="addItemBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300 mb-6">
+                    Add Item ➕
+                </button>
+                <div id="itemsList" class="space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- Step 4: Receipt Upload -->
+        <div class="max-w-4xl mx-auto step-content hidden" id="step4">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 class="text-3xl font-bold text-white mb-6">Upload Receipt (Optional)</h2>
+                <div class="border-2 border-dashed border-white/30 rounded-2xl p-12 text-center mb-6">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-white/50 mb-4"></i>
+                    <p class="text-white mb-4">Drag & drop or click to upload</p>
+                    <input type="file" id="receiptUpload" accept="image/*" class="hidden">
+                    <button onclick="document.getElementById('receiptUpload').click()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                        Choose File
+                    </button>
+                </div>
+                <button id="simulateOCR" class="bg-gradient-to-r from-green-600 to-teal-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                    🪄 Simulate OCR Auto-fill (Demo)
+                </button>
+                <div id="ocrResult" class="mt-6 hidden bg-green-500/20 border border-green-500/50 rounded-lg p-4">
+                    <p class="text-white">✅ Receipt scanned! Items auto-filled.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Summary -->
+        <div class="max-w-4xl mx-auto step-content hidden" id="step5">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 class="text-3xl font-bold text-white mb-6">💰 Bill Summary</h2>
+                <div id="summaryTable" class="overflow-x-auto">
+                    <table class="w-full text-white">
+                        <thead>
+                            <tr class="border-b border-white/20">
+                                <th class="text-left p-4">Friend</th>
+                                <th class="text-right p-4">Total Owed (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryBody">
+                        </tbody>
+                        <tfoot>
+                            <tr class="border-t-2 border-white/30 font-bold">
+                                <td class="p-4">Grand Total</td>
+                                <td class="text-right p-4" id="grandTotal">₹0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <button id="sendNotifications" class="mt-6 w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-4 rounded-full font-semibold hover:scale-105 transform transition duration-300 text-lg">
+                    📤 Send Notifications to Friends
+                </button>
+                <div id="notificationAlert" class="mt-4 hidden bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-center">
+                    <p class="text-white text-lg">✅ Messages sent to all friends!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="max-w-4xl mx-auto mt-8 flex justify-between">
+            <button id="prevBtn" class="bg-white/20 text-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transform transition duration-300 hidden">
+                ← Previous
+            </button>
+            <button id="nextBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300 ml-auto">
+                Next →
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">💰</span>
+                        <span class="text-xl font-bold text-white">Smart Social Wallet</span>
+                    </div>
+                    <p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/split-bill.js"></script>
+</body>
+</html>
+

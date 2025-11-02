@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Social Wallet - Manage, Split & Grow Together</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">💰</span>
+                    <span class="text-2xl font-bold text-white">Smart Social Wallet</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white hover:text-purple-300 transition duration-300 font-semibold">Home</a>
+                    <a href="features.html" class="text-white/80 hover:text-purple-300 transition duration-300">Features</a>
+                    <a href="split-bill.html" class="text-white/80 hover:text-purple-300 transition duration-300">Bill Split</a>
+                    <a href="expense-tracker.html" class="text-white/80 hover:text-purple-300 transition duration-300">Tracker</a>
+                    <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
+                    <a href="rewards.html" class="text-white/80 hover:text-purple-300 transition duration-300">Rewards</a>
+                    <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                </div>
+                <button class="md:hidden text-white" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="hidden md:hidden mt-4 space-y-2" id="mobileMenu">
+                <a href="index.html" class="block text-white hover:text-purple-300 transition">Home</a>
+                <a href="features.html" class="block text-white/80 hover:text-purple-300 transition">Features</a>
+                <a href="split-bill.html" class="block text-white/80 hover:text-purple-300 transition">Bill Split</a>
+                <a href="expense-tracker.html" class="block text-white/80 hover:text-purple-300 transition">Tracker</a>
+                <a href="ai-assistant.html" class="block text-white/80 hover:text-purple-300 transition">AI Assistant</a>
+                <a href="rewards.html" class="block text-white/80 hover:text-purple-300 transition">Rewards</a>
+                <a href="contact.html" class="block text-white/80 hover:text-purple-300 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 py-20 text-center">
+        <div class="animate-fade-in">
+            <h1 class="text-6xl md:text-8xl font-bold text-white mb-6 animate-bounce-slow">
+                Smart Social Wallet
+            </h1>
+            <p class="text-2xl md:text-3xl text-purple-200 mb-4 font-light">
+                Manage, Split & Grow Together
+            </p>
+            <p class="text-xl md:text-2xl text-blue-200 mb-12 max-w-3xl mx-auto">
+                AI + Blockchain wallet for Gen Z to manage money socially and smartly.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="split-bill.html" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:scale-110 transform transition duration-300 shadow-lg hover:shadow-purple-500/50">
+                    Get Started 🚀
+                </a>
+                <a href="features.html" class="bg-white/20 backdrop-blur-md text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/30 transform transition duration-300 border-2 border-white/30">
+                    Explore Features ✨
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Preview Cards -->
+    <section class="container mx-auto px-4 py-16">
+        <h2 class="text-4xl font-bold text-white text-center mb-12">Why Choose Us?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- AI Assistant Card -->
+            <div class="feature-card bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transform transition duration-300 cursor-pointer border border-white/20">
+                <div class="text-6xl mb-4 text-center">🤖</div>
+                <h3 class="text-2xl font-bold text-white mb-3 text-center">AI Assistant</h3>
+                <p class="text-purple-200 text-center">Get personalized money tips, spending insights, and budget guidance powered by AI.</p>
+                <a href="ai-assistant.html" class="block mt-4 text-center text-purple-300 hover:text-purple-200 transition">Learn more →</a>
+            </div>
+
+            <!-- Bill Splitting Card -->
+            <div class="feature-card bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transform transition duration-300 cursor-pointer border border-white/20">
+                <div class="text-6xl mb-4 text-center">💸</div>
+                <h3 class="text-2xl font-bold text-white mb-3 text-center">Bill Splitting</h3>
+                <p class="text-purple-200 text-center">Split bills easily with friends. Scan receipts, auto-calculate, and send reminders.</p>
+                <a href="split-bill.html" class="block mt-4 text-center text-purple-300 hover:text-purple-200 transition">Try it now →</a>
+            </div>
+
+            <!-- Expense Tracker Card -->
+            <div class="feature-card bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transform transition duration-300 cursor-pointer border border-white/20">
+                <div class="text-6xl mb-4 text-center">📊</div>
+                <h3 class="text-2xl font-bold text-white mb-3 text-center">Expense Tracker</h3>
+                <p class="text-purple-200 text-center">Track your expenses, view category charts, and get saving reminders.</p>
+                <a href="expense-tracker.html" class="block mt-4 text-center text-purple-300 hover:text-purple-200 transition">Start tracking →</a>
+            </div>
+
+            <!-- Gamified Rewards Card -->
+            <div class="feature-card bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:scale-105 transform transition duration-300 cursor-pointer border border-white/20">
+                <div class="text-6xl mb-4 text-center">🏆</div>
+                <h3 class="text-2xl font-bold text-white mb-3 text-center">Gamified Rewards</h3>
+                <p class="text-purple-200 text-center">Learn finance, earn badges, and compete with friends while improving your money habits.</p>
+                <a href="rewards.html" class="block mt-4 text-center text-purple-300 hover:text-purple-200 transition">Earn rewards →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="container mx-auto px-4 py-16">
+        <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="text-5xl font-bold text-white mb-2">10K+</div>
+                    <div class="text-purple-200 text-lg">Active Users</div>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold text-white mb-2">₹50L+</div>
+                    <div class="text-purple-200 text-lg">Bills Split</div>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold text-white mb-2">5K+</div>
+                    <div class="text-purple-200 text-lg">Badges Earned</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">💰</span>
+                        <span class="text-xl font-bold text-white">Smart Social Wallet</span>
+                    </div>
+                    <p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+

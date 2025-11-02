@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewards & Gamification - Smart Social Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">💰</span>
+                    <a href="index.html" class="text-2xl font-bold text-white">Smart Social Wallet</a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white/80 hover:text-purple-300 transition duration-300">Home</a>
+                    <a href="features.html" class="text-white/80 hover:text-purple-300 transition duration-300">Features</a>
+                    <a href="split-bill.html" class="text-white/80 hover:text-purple-300 transition duration-300">Bill Split</a>
+                    <a href="expense-tracker.html" class="text-white/80 hover:text-purple-300 transition duration-300">Tracker</a>
+                    <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
+                    <a href="rewards.html" class="text-white hover:text-purple-300 transition duration-300 font-semibold">Rewards</a>
+                    <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                </div>
+                <button class="md:hidden text-white" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <div class="hidden md:hidden mt-4 space-y-2" id="mobileMenu">
+                <a href="index.html" class="block text-white hover:text-purple-300 transition">Home</a>
+                <a href="features.html" class="block text-white/80 hover:text-purple-300 transition">Features</a>
+                <a href="split-bill.html" class="block text-white/80 hover:text-purple-300 transition">Bill Split</a>
+                <a href="expense-tracker.html" class="block text-white/80 hover:text-purple-300 transition">Tracker</a>
+                <a href="ai-assistant.html" class="block text-white/80 hover:text-purple-300 transition">AI Assistant</a>
+                <a href="rewards.html" class="block text-white hover:text-purple-300 transition">Rewards</a>
+                <a href="contact.html" class="block text-white/80 hover:text-purple-300 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="container mx-auto px-4 py-12">
+        <h1 class="text-5xl font-bold text-white text-center mb-4">🏆 Rewards & Gamification</h1>
+        <p class="text-xl text-purple-200 text-center mb-8">Learn, earn badges, and compete with friends!</p>
+
+        <!-- XP Level Section -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Your Progress</h2>
+                        <p class="text-purple-200">Level <span id="userLevel">5</span> • <span id="userXP">1,250</span> XP</p>
+                    </div>
+                    <div class="text-6xl">⭐</div>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-6 mb-2">
+                    <div class="bg-gradient-to-r from-purple-600 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2" id="xpProgress" style="width: 62.5%">
+                        <span class="text-white text-xs font-semibold">62.5%</span>
+                    </div>
+                </div>
+                <p class="text-white/60 text-sm">Next level: <span id="nextLevelXP">500</span> XP needed</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Badges Section -->
+            <div class="lg:col-span-2">
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-6">🏅 Your Badges</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="badge-card bg-gradient-to-br from-yellow-600/30 to-orange-600/30 rounded-2xl p-6 text-center border border-yellow-500/50 hover:scale-110 transform transition duration-300 cursor-pointer" data-badge="smart-saver">
+                            <div class="text-5xl mb-2">💎</div>
+                            <h3 class="text-white font-semibold mb-1">Smart Saver</h3>
+                            <p class="text-purple-200 text-xs">Unlocked!</p>
+                        </div>
+                        <div class="badge-card bg-gradient-to-br from-purple-600/30 to-blue-600/30 rounded-2xl p-6 text-center border border-purple-500/50 hover:scale-110 transform transition duration-300 cursor-pointer" data-badge="budget-hero">
+                            <div class="text-5xl mb-2">🎯</div>
+                            <h3 class="text-white font-semibold mb-1">Budget Hero</h3>
+                            <p class="text-purple-200 text-xs">Unlocked!</p>
+                        </div>
+                        <div class="badge-card bg-gradient-to-br from-green-600/30 to-teal-600/30 rounded-2xl p-6 text-center border border-green-500/50 hover:scale-110 transform transition duration-300 cursor-pointer" data-badge="stock-explorer">
+                            <div class="text-5xl mb-2">📈</div>
+                            <h3 class="text-white font-semibold mb-1">Stock Explorer</h3>
+                            <p class="text-purple-200 text-xs">Unlocked!</p>
+                        </div>
+                        <div class="badge-card bg-white/5 rounded-2xl p-6 text-center border border-white/10 hover:scale-105 transform transition duration-300 cursor-pointer" data-badge="investment-guru">
+                            <div class="text-5xl mb-2 opacity-50">🏅</div>
+                            <h3 class="text-white/50 font-semibold mb-1">Investment Guru</h3>
+                            <p class="text-purple-200/50 text-xs">Locked</p>
+                        </div>
+                        <div class="badge-card bg-white/5 rounded-2xl p-6 text-center border border-white/10 hover:scale-105 transform transition duration-300 cursor-pointer" data-badge="spending-master">
+                            <div class="text-5xl mb-2 opacity-50">💸</div>
+                            <h3 class="text-white/50 font-semibold mb-1">Spending Master</h3>
+                            <p class="text-purple-200/50 text-xs">Locked</p>
+                        </div>
+                        <div class="badge-card bg-white/5 rounded-2xl p-6 text-center border border-white/10 hover:scale-105 transform transition duration-300 cursor-pointer" data-badge="quiz-champion">
+                            <div class="text-5xl mb-2 opacity-50">🧠</div>
+                            <h3 class="text-white/50 font-semibold mb-1">Quiz Champion</h3>
+                            <p class="text-purple-200/50 text-xs">Locked</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Quiz -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20">
+                    <h2 class="text-2xl font-bold text-white mb-6">📚 Financial Quiz</h2>
+                    <div id="quizContainer">
+                        <div id="quizQuestion" class="mb-6">
+                            <p class="text-white text-lg mb-4" id="questionText">Question will appear here...</p>
+                            <div id="quizOptions" class="space-y-3">
+                                <!-- Options will be generated dynamically -->
+                            </div>
+                        </div>
+                        <button id="startQuizBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
+                            Start Quiz 🚀
+                        </button>
+                        <div id="quizResult" class="hidden mt-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg">
+                            <p class="text-white font-semibold" id="resultText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-6">📊 Leaderboard</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between bg-gradient-to-r from-yellow-600/30 to-orange-600/30 rounded-lg p-4 border border-yellow-500/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🥇</span>
+                                <div>
+                                    <div class="text-white font-semibold">Alex M.</div>
+                                    <div class="text-purple-200 text-sm">5,280 XP</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-gradient-to-r from-gray-400/30 to-gray-500/30 rounded-lg p-4 border border-gray-400/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🥈</span>
+                                <div>
+                                    <div class="text-white font-semibold">Sarah K.</div>
+                                    <div class="text-purple-200 text-sm">4,950 XP</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-gradient-to-r from-orange-600/30 to-red-600/30 rounded-lg p-4 border border-orange-500/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🥉</span>
+                                <div>
+                                    <div class="text-white font-semibold">Mike R.</div>
+                                    <div class="text-purple-200 text-sm">4,620 XP</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-purple-600/30 rounded-lg p-4 border border-purple-500/50">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold text-purple-300">#4</span>
+                                <div>
+                                    <div class="text-white font-semibold">You</div>
+                                    <div class="text-purple-200 text-sm">1,250 XP</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-white/5 rounded-lg p-4 border border-white/10">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl font-bold text-white/50">#5</span>
+                                <div>
+                                    <div class="text-white/70 font-semibold">Emma L.</div>
+                                    <div class="text-purple-200/50 text-sm">980 XP</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20">
+                    <h2 class="text-2xl font-bold text-white mb-6">📈 Your Stats</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-purple-200">Badges Earned</span>
+                            <span class="text-white font-bold">3/6</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-purple-200">Quizzes Completed</span>
+                            <span class="text-white font-bold">12</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-purple-200">Streak</span>
+                            <span class="text-white font-bold">7 days 🔥</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-purple-200">Total XP</span>
+                            <span class="text-white font-bold">1,250</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">💰</span>
+                        <span class="text-xl font-bold text-white">Smart Social Wallet</span>
+                    </div>
+                    <p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/rewards.js"></script>
+</body>
+</html>
+

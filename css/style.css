@@ -1,0 +1,318 @@
+/* Custom Styles for Smart Social Wallet */
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceSlow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes confetti {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.animate-bounce-slow {
+    animation: bounceSlow 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Feature Cards */
+.feature-card {
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(147, 51, 234, 0.5);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(147, 51, 234, 0.7);
+}
+
+/* Chat Bubbles */
+.chat-bubble-user {
+    animation: slideIn 0.3s ease-out;
+}
+
+.chat-bubble-ai {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Step Indicator */
+.step-indicator {
+    transition: all 0.3s ease;
+}
+
+.step-indicator.active {
+    background: linear-gradient(135deg, #9333ea, #3b82f6);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+}
+
+.step-indicator.completed {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+/* Badge Card Hover Effect */
+.badge-card {
+    transition: all 0.3s ease;
+}
+
+.badge-card:hover {
+    box-shadow: 0 15px 30px rgba(147, 51, 234, 0.4);
+    transform: translateY(-5px) scale(1.05);
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading Animation */
+.loading-dots::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40% {
+        content: '..';
+    }
+    60%, 100% {
+        content: '...';
+    }
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(135deg, #9333ea, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Glow Effect */
+.glow {
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+}
+
+.glow:hover {
+    box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+}
+
+/* Notification Animation */
+.notification-enter {
+    animation: slideIn 0.4s ease-out;
+}
+
+/* Button Ripple Effect */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .feature-card {
+        margin-bottom: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    h2 {
+        font-size: 1.75rem !important;
+    }
+}
+
+/* Focus States */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: rgba(147, 51, 234, 0.5);
+}
+
+/* Selection Color */
+::selection {
+    background: rgba(147, 51, 234, 0.3);
+    color: white;
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Progress Bar Animation */
+.progress-bar {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Confetti Animation */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #9333ea;
+    animation: confetti 3s ease-out forwards;
+}
+
+/* Form Input Styling */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Backdrop Blur Support */
+@supports (backdrop-filter: blur(10px)) {
+    .backdrop-blur-md {
+        backdrop-filter: blur(12px);
+    }
+}
+
+/* Select Dropdown Styling */
+select {
+    color: white !important;
+}
+
+select option {
+    color: white !important;
+    background-color: rgba(147, 51, 234, 0.9) !important;
+    padding: 8px;
+}
+
+select option:checked,
+select option:hover {
+    background-color: rgba(59, 130, 246, 0.9) !important;
+}
+
+/* Ensure select dropdown options are visible on all browsers */
+select::-ms-expand {
+    display: block;
+}
+
+/* For Firefox */
+select {
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+    accent-color: #9333ea;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #9333ea;
+    border-color: #9333ea;
+}
+
+/* Print Styles */
+@media print {
+    nav,
+    footer,
+    button {
+        display: none;
+    }
+}
+
