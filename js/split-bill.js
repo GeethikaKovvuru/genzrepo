@@ -6,6 +6,13 @@ let selectedScenario = '';
 let friends = [];
 let items = [];
 let friendListenersSetup = false;
+const scenarioItems = {
+	food: ['Pizza', 'Burger', 'Fries', 'Sushi', 'Pasta', 'Coke'],
+	rent: ['Monthly Rent', 'Maintenance', 'Utilities'],
+	shopping: ['T-shirt', 'Sneakers', 'Accessories', 'Hoodie'],
+	party: ['DJ', 'Snacks', 'Drinks', 'Decor'],
+	travel: ['Flight', 'Hotel', 'Cab', 'Fuel', 'Tickets']
+};
 
 document.addEventListener('DOMContentLoaded', function() {
     const scenarioButtons = document.querySelectorAll('.scenario-btn');
@@ -14,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateFriendFieldsBtn = document.getElementById('generateFriendFields');
     const addItemBtn = document.getElementById('addItemBtn');
     const simulateOCRBtn = document.getElementById('simulateOCR');
+    const receiptUpload = document.getElementById('receiptUpload');
     const sendNotificationsBtn = document.getElementById('sendNotifications');
 
     // Scenario Selection
@@ -27,6 +35,27 @@ document.addEventListener('DOMContentLoaded', function() {
             scenarioButtons.forEach(b => b.classList.remove('ring-4', 'ring-purple-400'));
             // Add active class to clicked button
             this.classList.add('ring-4', 'ring-purple-400');
+
+            // Customize item placeholders & suggestions per scenario
+            const itemNameEl = document.getElementById('itemName');
+            const suggestionsEl = document.getElementById('itemSuggestions');
+            if (itemNameEl) {
+                const pretty = selectedScenario.charAt(0).toUpperCase() + selectedScenario.slice(1);
+                itemNameEl.placeholder = selectedScenario ? `${pretty} item (e.g., ${scenarioItems[selectedScenario]?.[0] || 'Item'})` : 'Item name';
+            }
+            if (suggestionsEl) {
+                const list = scenarioItems[selectedScenario] || [];
+                suggestionsEl.innerHTML = list.map(name => `
+                    <button type="button" class="text-xs bg-white/15 hover:bg-white/25 text-white px-3 py-1 rounded-full border border-white/20 suggestion-chip" data-name="${name}">${name}</button>
+                `).join('');
+                suggestionsEl.querySelectorAll('.suggestion-chip').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const n = this.getAttribute('data-name');
+                        const itemName = document.getElementById('itemName');
+                        if (itemName) itemName.value = n;
+                    });
+                });
+            }
         });
     });
 
@@ -127,26 +156,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Auto-fill some sample items
             const validFriends = friends.filter(f => f && f.trim());
             if (items.length === 0 && validFriends.length > 0) {
-                const sampleItems = [
-                    { 
-                        name: 'Pizza', 
-                        amount: 450, 
-                        buyer: validFriends[0], 
-                        users: validFriends.slice(0, Math.min(validFriends.length, 2)) // First 2 friends share
-                    },
-                    { 
-                        name: 'Coke', 
-                        amount: 120, 
-                        buyer: validFriends[0], 
-                        users: validFriends // All friends share
-                    },
-                    { 
-                        name: 'Garlic Bread', 
-                        amount: 180, 
-                        buyer: validFriends[1] || validFriends[0], 
-                        users: validFriends.slice(0, Math.min(validFriends.length, 2))
-                    }
-                ];
+                const base = scenarioItems[selectedScenario] || ['Item A','Item B','Item C'];
+                const sampleItems = base.slice(0,3).map((nm, idx) => ({
+                    name: nm,
+                    amount: 200 + idx * 150,
+                    buyer: validFriends[Math.min(idx, validFriends.length - 1)],
+                    users: validFriends.slice(0, Math.max(1, Math.min(validFriends.length, 2 + (idx%2))))
+                }));
 
                 sampleItems.forEach(item => {
                     items.push(item);
@@ -160,6 +176,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 3000);
             } else if (validFriends.length === 0) {
                 alert('Please add friends first before using OCR simulation!');
+            }
+        });
+    }
+
+    // Receipt upload preview & basic hook
+    if (receiptUpload) {
+        receiptUpload.addEventListener('change', function() {
+            const file = this.files && this.files[0];
+            const previewWrap = document.getElementById('receiptPreview');
+            const imgEl = document.getElementById('receiptImg');
+            const nameEl = document.getElementById('receiptName');
+            if (file && imgEl && nameEl && previewWrap) {
+                const url = URL.createObjectURL(file);
+                imgEl.src = url;
+                nameEl.textContent = `Selected: ${file.name}`;
+                previewWrap.classList.remove('hidden');
             }
         });
     }

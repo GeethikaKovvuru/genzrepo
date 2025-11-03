@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize chart
     initChart();
 
+    // Initialize Savings Tree
+    initSavingsTree();
+
     // Add Expense Button
     if (addExpenseBtn) {
         addExpenseBtn.addEventListener('click', function() {
@@ -35,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNotifications();
     updateStats();
     renderExpenses();
+    updateSavingsTree();
 });
 
 function addExpense() {
@@ -60,6 +64,7 @@ function addExpense() {
     updateChart();
     updateNotifications();
     renderExpenses();
+    updateSavingsTree();
 
     // Clear form
     document.getElementById('expenseAmount').value = '';
@@ -73,6 +78,7 @@ function deleteExpense(id) {
     updateChart();
     renderExpenses();
     updateNotifications();
+    updateSavingsTree();
 }
 
 function saveExpenses() {
@@ -168,6 +174,7 @@ function updateChart() {
         'shopping': '🛍️ Shopping',
         'entertainment': '🎬 Entertainment',
         'bills': '⚡ Bills',
+        'savings': '💾 Savings',
         'other': '📦 Other'
     };
 
@@ -199,12 +206,13 @@ function renderExpenses() {
     const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     expensesList.innerHTML = sortedExpenses.map(expense => {
-        const categoryLabels = {
+    const categoryLabels = {
             'food': '🍕 Food',
             'transport': '🚗 Transport',
             'shopping': '🛍️ Shopping',
             'entertainment': '🎬 Entertainment',
             'bills': '⚡ Bills',
+        'savings': '💾 Savings',
             'other': '📦 Other'
         };
 
@@ -304,3 +312,151 @@ function updateNotifications() {
     }).join('');
 }
 
+// ===== Savings Tree (embedded) =====
+const LEAF_UNIT = 100; // ₹ per leaf
+function initSavingsTree() {
+    const canvas = document.getElementById('etTreeCanvas');
+    if (!canvas) return;
+    // draw ground and trunk once
+    if (!canvas.querySelector('#et-ground')) {
+        const ground = svgEl('rect', { id:'et-ground', x:0, y:360, width:600, height:40, fill:'rgba(16,185,129,0.5)' });
+        canvas.appendChild(ground);
+    }
+    if (!canvas.querySelector('#et-trunk')) {
+        const trunk = svgEl('rect', { id:'et-trunk', x:290, y:200, width:20, height:160, rx:8, fill:'#7c4a1f', opacity:0 });
+        canvas.appendChild(trunk);
+        animateIn(trunk);
+    }
+    cycleQuotes();
+}
+
+function updateSavingsTree() {
+    const canvas = document.getElementById('etTreeCanvas');
+    if (!canvas) return;
+
+    // Calculate baseline and current leaves based on expenses
+    const baselineLeaves = Math.max(0, Math.floor((monthlyBudget || 10000) / LEAF_UNIT));
+    const sumSavings = expenses.filter(e => e.category === 'savings').reduce((s, e) => s + e.amount, 0);
+    const sumSpending = expenses.filter(e => e.category !== 'savings').reduce((s, e) => s + e.amount, 0);
+    const savingsUnits = Math.floor(sumSavings / LEAF_UNIT);
+    const spendUnits = Math.floor(sumSpending / LEAF_UNIT);
+    const targetLeaves = Math.max(0, Math.min(baselineLeaves, baselineLeaves + savingsUnits - spendUnits));
+
+    const existingLeaves = canvas.querySelectorAll('.et-leaf').length;
+    if (existingLeaves < targetLeaves) {
+        for (let i=0; i<targetLeaves-existingLeaves; i++) addEtLeaf(canvas, true);
+    } else if (existingLeaves > targetLeaves) {
+        for (let i=0; i<existingLeaves-targetLeaves; i++) removeEtLeaf(canvas, true);
+    }
+
+    // Weekly branch check using savings only
+    const weekKey = getWeekKey(new Date());
+    const weekSum = expenses.filter(e => e.category === 'savings' && getWeekKey(new Date(e.date)) === weekKey)
+        .reduce((s, e) => s + e.amount, 0);
+    if (weekSum >= 500 && !canvas.querySelector(`.et-branch[data-week="${weekKey}"]`)) {
+        addEtBranch(canvas, weekKey);
+        toastEt('Weekly savings goal hit! Branch added 🌿','success');
+    }
+
+    // Milestones based on total savings
+    const milestones = [1000, 5000, 10000, 20000];
+    milestones.forEach(m => {
+        const key = `et-bloom-${m}`;
+        if (sumSavings >= m && !canvas.querySelector(`[data-bloom="${key}"]`)) {
+            addEtBloom(canvas, key);
+            toastEt('Milestone bloom unlocked! 🌸','success');
+        }
+    });
+
+    const totalEl = document.getElementById('etStTotal');
+    if (totalEl) totalEl.textContent = `₹${sumSavings.toFixed(2)}`;
+}
+
+function addEtBranch(canvas, weekKey) {
+    const x = 300;
+    const startY = 260 - Math.random()*80;
+    const dir = Math.random() > 0.5 ? 1 : -1;
+    const length = 80 + Math.random()*40;
+    const endX = x + dir * length;
+    const endY = startY - 20 - Math.random()*30;
+    const path = svgEl('path', { d: `M ${x} ${startY} Q ${x+dir*40} ${startY-30}, ${endX} ${endY}`, stroke:'#5f3b15', 'stroke-width':'6', fill:'none', 'stroke-linecap':'round', opacity:'0' });
+    path.classList.add('et-branch');
+    path.setAttribute('data-week', weekKey);
+    canvas.appendChild(path);
+    animateIn(path);
+}
+
+function addEtLeaf(canvas, instant) {
+    const cx = 260 + Math.random()*80 + (Math.random()>0.5? 80: -80) * Math.random();
+    const cy = 160 + Math.random()*120;
+    const leaf = svgEl('ellipse', { cx: cx, cy: cy, rx: 10, ry: 16, fill: randomLeafColor(), opacity: instant ? '1':'0' });
+    leaf.classList.add('et-leaf');
+    leaf.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))';
+    canvas.appendChild(leaf);
+    if (!instant) animateIn(leaf);
+}
+
+function removeEtLeaf(canvas, instant) {
+    const leaf = canvas.querySelector('.et-leaf');
+    if (!leaf) return;
+    if (instant) { canvas.removeChild(leaf); return; }
+    leaf.style.transition = 'all 700ms ease';
+    leaf.style.transform = 'translateY(40px) rotate(15deg)';
+    leaf.setAttribute('opacity','0');
+    setTimeout(()=>{ leaf.parentNode && leaf.parentNode.removeChild(leaf); }, 700);
+}
+
+function addEtBloom(canvas, bloomKey) {
+    const cx = 240 + Math.random()*120;
+    const cy = 120 + Math.random()*80;
+    const flower = svgEl('circle', { cx: cx, cy: cy, r: 0, fill: randomBloomColor(), opacity:'1' });
+    flower.setAttribute('data-bloom', bloomKey);
+    canvas.appendChild(flower);
+    flower.style.transition = 'all 600ms ease';
+    requestAnimationFrame(()=>{ flower.setAttribute('r','10'); });
+}
+
+function svgEl(tag, attrs){
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.entries(attrs||{}).forEach(([k,v])=> el.setAttribute(k, String(v)));
+    return el;
+}
+
+function animateIn(el){
+    el.style.transition = 'all 600ms ease';
+    el.style.transformOrigin = 'center';
+    el.style.transform = 'scale(0.8) translateY(10px)';
+    el.setAttribute('opacity','0');
+    requestAnimationFrame(()=>{
+        el.setAttribute('opacity','1');
+        el.style.transform = 'scale(1) translateY(0)';
+    });
+}
+
+function randomLeafColor(){
+    const greens = ['#22c55e','#16a34a','#10b981','#4ade80'];
+    return greens[Math.floor(Math.random()*greens.length)];
+}
+function randomBloomColor(){
+    const colors = ['#f472b6','#f59e0b','#a78bfa','#60a5fa'];
+    return colors[Math.floor(Math.random()*colors.length)];
+}
+
+function toastEt(msg, type){
+    const box = document.getElementById('etStMsg');
+    if (!box) return;
+    const style = type==='success' ? 'bg-green-500/20 border-green-500/50' : 'bg-blue-500/20 border-blue-500/50';
+    box.className = `mt-3 p-3 rounded-lg border ${style}`;
+    box.textContent = msg;
+    box.classList.remove('hidden');
+    setTimeout(()=>{ box.classList.add('hidden'); }, 2500);
+}
+
+function getWeekKey(d){
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1)/7);
+    return `${date.getUTCFullYear()}-W${weekNo}`;
+}

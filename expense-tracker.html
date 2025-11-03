@@ -25,7 +25,10 @@
                     <a href="expense-tracker.html" class="text-white hover:text-purple-300 transition duration-300 font-semibold">Tracker</a>
                     <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
                     <a href="rewards.html" class="text-white/80 hover:text-purple-300 transition duration-300">Rewards</a>
+                    <a href="games.html" class="text-white/80 hover:text-purple-300 transition duration-300">Games</a>
                     <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                    <span id="navUserGreeting" class="text-white hidden"></span>
+                    <span id="navAuthCta"></span>
                 </div>
                 <button class="md:hidden text-white" id="mobileMenuBtn">
                     <i class="fas fa-bars text-2xl"></i>
@@ -78,6 +81,7 @@
                                 <option value="shopping">🛍️ Shopping</option>
                                 <option value="entertainment">🎬 Entertainment</option>
                                 <option value="bills">⚡ Bills</option>
+                                <option value="savings">💾 Savings</option>
                                 <option value="other">📦 Other</option>
                             </select>
                         </div>
@@ -128,6 +132,23 @@
                 <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
                     <h2 class="text-2xl font-bold text-white mb-4">Category Breakdown</h2>
                     <canvas id="expenseChart" class="max-h-64"></canvas>
+                </div>
+
+                <!-- Savings Tree -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-2xl font-bold text-white">🌳 Savings Tree</h2>
+                        <div class="text-right">
+                            <div class="text-purple-200 text-sm">Total Saved</div>
+                            <div id="etStTotal" class="text-white font-bold">₹0</div>
+                        </div>
+                    </div>
+                    <p class="text-purple-200 mb-4">As your money grows, your tree grows too.</p>
+                    <div class="bg-gradient-to-b from-green-700/30 to-blue-700/20 rounded-2xl border border-white/10 p-4">
+                        <svg id="etTreeCanvas" viewBox="0 0 600 400" class="w-full h-96 rounded-xl bg-white/5"></svg>
+                    </div>
+                    <div class="mt-3 text-center text-white italic" id="etStQuote">“As your money grows, your tree grows too.”</div>
+                    <div id="etStMsg" class="hidden mt-3 p-3 rounded-lg border"></div>
                 </div>
 
                 <!-- Expenses List -->
@@ -205,6 +226,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/expense-tracker.js"></script>
 </body>
 </html>

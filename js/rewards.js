@@ -6,37 +6,59 @@ let quizScore = 0;
 let userXP = 1250;
 let userLevel = 5;
 
-const quizQuestions = [
-    {
-        question: "What is the recommended percentage of income to save?",
-        options: ["10%", "20%", "30%", "5%"],
-        correct: 1
-    },
-    {
-        question: "What does ETF stand for?",
-        options: ["Exchange Traded Fund", "Electronic Trading Fund", "Equity Transfer Fund", "Expense Tracking Fund"],
-        correct: 0
-    },
-    {
-        question: "Which is the best strategy for beginners to invest?",
-        options: ["Buy individual stocks", "Invest in index funds", "Cryptocurrency only", "Avoid investing"],
-        correct: 1
-    },
-    {
-        question: "What is an emergency fund?",
-        options: ["Money for vacations", "3-6 months of expenses saved", "Investment portfolio", "Credit card limit"],
-        correct: 1
-    }
-];
+// Question banks by domain
+const QUESTION_BANK = {
+    general: [
+        { question: 'What is the recommended percentage of income to save?', options: ['10%','20%','30%','5%'], correct: 1 },
+        { question: 'What does ETF stand for?', options: ['Exchange Traded Fund','Electronic Trading Fund','Equity Transfer Fund','Expense Tracking Fund'], correct: 0 },
+        { question: 'What is an emergency fund?', options: ['Money for vacations','3-6 months of expenses saved','Investment portfolio','Credit card limit'], correct: 1 },
+        { question: 'Which of the following is a liability?', options: ['Savings','Salary','Credit Card Debt','Equity'], correct: 2 },
+        { question: 'APR refers to?', options: ['Annual Percentage Rate','Average Pay Rate','Annual Profit Ratio','Applied Payment Rate'], correct: 0 }
+    ],
+    budgeting: [
+        { question: '50/30/20 rule allocates 20% to?', options: ['Wants','Needs','Savings/Debt payoff','Entertainment'], correct: 2 },
+        { question: 'Zero-based budgeting means?', options: ['Spending all money','Every rupee is assigned a job','No savings','No expenses'], correct: 1 },
+        { question: 'Which tool helps track categories best?', options: ['Random notes','Category envelopes','Guessing','None'], correct: 1 },
+        { question: 'Best day to set budget?', options: ['Payday','End of month','Random','Never'], correct: 0 },
+        { question: 'A sinking fund is for?', options: ['Daily coffee','Known future expense','Emergency only','Investing'], correct: 1 }
+    ],
+    investing: [
+        { question: 'Diversification helps by?', options: ['Increasing risk','Eliminating taxes','Reducing risk','Doubling returns'], correct: 2 },
+        { question: 'DCA stands for?', options: ['Dollar-Cost Averaging','Direct Cash Allocation','Debt Coverage Amount','Daily Capital Avg'], correct: 0 },
+        { question: 'Index fund tracks?', options: ['A market index','Random picks','Crypto only','Gold only'], correct: 0 },
+        { question: 'Time in market beats?', options: ['Luck','Timing the market','Leverage','Dividends'], correct: 1 },
+        { question: 'Before investing you should have?', options: ['Car loan','New phone','Emergency fund','Travel plan'], correct: 2 }
+    ],
+    credit: [
+        { question: 'Good credit utilization is under?', options: ['10%','30%','60%','90%'], correct: 1 },
+        { question: 'Paying only minimum leads to?', options: ['No interest','Faster payoff','More interest','Rewards blocked'], correct: 2 },
+        { question: 'Hard inquiry can?', options: ['Boost score','Lower score temporarily','No effect','Freeze account'], correct: 1 },
+        { question: 'Longest factor in credit score?', options: ['Payment history','New credit','Credit mix','Length of history'], correct: 3 },
+        { question: 'Best time to pay bill?', options: ['After due date','On due date','Before statement close','When reminder comes'], correct: 2 }
+    ],
+    crypto: [
+        { question: 'Blockchain is a?', options: ['Central database','Distributed ledger','Bank','Spreadsheet'], correct: 1 },
+        { question: 'Private key should be?', options: ['Shared','Written on wall','Kept secret','Emailed'], correct: 2 },
+        { question: 'Bitcoin supply is?', options: ['Unlimited','21 million','Variable','Unknown'], correct: 1 },
+        { question: 'Stablecoin aims to track?', options: ['Gold','Stocks','A fiat currency','Random index'], correct: 2 },
+        { question: 'DYOR means?', options: ['Do Your Own Research','Don’t Yield On Risk','Dynamic Yield On Return','Daily Yearly Offset Rate'], correct: 0 }
+    ]
+};
+
+let activeQuiz = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     const startQuizBtn = document.getElementById('startQuizBtn');
     const badgeCards = document.querySelectorAll('.badge-card');
+    const domainSelect = document.getElementById('quizDomain');
+    const lengthSelect = document.getElementById('quizLength');
 
     // Start Quiz Button
     if (startQuizBtn) {
         startQuizBtn.addEventListener('click', function() {
-            startQuiz();
+            const domain = domainSelect ? domainSelect.value : 'general';
+            const length = lengthSelect ? parseInt(lengthSelect.value) : 10;
+            startQuiz(domain, length);
         });
     }
 
@@ -57,9 +79,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateXPProgress();
 });
 
-function startQuiz() {
+function startQuiz(domain = 'general', length = 10) {
     currentQuizQuestion = 0;
     quizScore = 0;
+    activeQuiz = buildQuiz(domain, length);
     
     const startBtn = document.getElementById('startQuizBtn');
     const questionText = document.getElementById('questionText');
@@ -73,16 +96,16 @@ function startQuiz() {
 }
 
 function displayQuestion() {
-    if (currentQuizQuestion >= quizQuestions.length) {
+    if (currentQuizQuestion >= activeQuiz.length) {
         endQuiz();
         return;
     }
 
-    const question = quizQuestions[currentQuizQuestion];
+    const question = activeQuiz[currentQuizQuestion];
     const questionText = document.getElementById('questionText');
     const quizOptions = document.getElementById('quizOptions');
 
-    questionText.textContent = `Question ${currentQuizQuestion + 1}/${quizQuestions.length}: ${question.question}`;
+    questionText.textContent = `Question ${currentQuizQuestion + 1}/${activeQuiz.length}: ${question.question}`;
     
     quizOptions.innerHTML = question.options.map((option, index) => {
         return `
@@ -103,7 +126,7 @@ function displayQuestion() {
 }
 
 function handleAnswer(selectedOption) {
-    const question = quizQuestions[currentQuizQuestion];
+    const question = activeQuiz[currentQuizQuestion];
     const options = document.querySelectorAll('.quiz-option');
     
     // Disable all options
@@ -140,7 +163,7 @@ function endQuiz() {
     questionText.textContent = 'Quiz Completed!';
     quizOptions.innerHTML = '';
 
-    const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+    const percentage = Math.round((quizScore / activeQuiz.length) * 100);
     const xpEarned = quizScore * 50; // 50 XP per correct answer
     
     userXP += xpEarned;
@@ -152,16 +175,38 @@ function endQuiz() {
         triggerConfetti();
         checkBadgeUnlock();
     } else if (percentage >= 75) {
-        message = `Great job! You scored ${quizScore}/${quizQuestions.length} (${percentage}%). You earned ${xpEarned} XP! ✨`;
+        message = `Great job! You scored ${quizScore}/${activeQuiz.length} (${percentage}%). You earned ${xpEarned} XP! ✨`;
         triggerConfetti();
     } else {
-        message = `You scored ${quizScore}/${quizQuestions.length} (${percentage}%). You earned ${xpEarned} XP! Keep learning! 💪`;
+        message = `You scored ${quizScore}/${activeQuiz.length} (${percentage}%). You earned ${xpEarned} XP! Keep learning! 💪`;
     }
 
     resultText.textContent = message;
     quizResult.classList.remove('hidden');
     startBtn.textContent = 'Take Quiz Again 🔄';
     startBtn.classList.remove('hidden');
+}
+
+function buildQuiz(domain, length) {
+    const bank = QUESTION_BANK[domain] && QUESTION_BANK[domain].length ? QUESTION_BANK[domain] : QUESTION_BANK.general;
+    const recentKey = `quiz_recent_${domain}`;
+    let recent = [];
+    try { recent = JSON.parse(sessionStorage.getItem(recentKey) || '[]'); } catch (e) {}
+    // Shuffle
+    const shuffled = [...bank].sort(() => Math.random() - 0.5);
+    // Prevent immediate repeats by filtering out questions matching strings in recent
+    const filtered = shuffled.filter(q => !recent.includes(q.question));
+    const needed = Math.max(1, Math.min(length, bank.length));
+    let pick = filtered.slice(0, needed);
+    if (pick.length < needed) {
+        // add from the rest if filtered too much
+        const rest = shuffled.filter(q => !pick.includes(q)).slice(0, needed - pick.length);
+        pick = pick.concat(rest);
+    }
+    // Update recent cache (cap at 2x length)
+    const newRecent = pick.map(q => q.question).concat(recent).slice(0, needed * 2);
+    try { sessionStorage.setItem(recentKey, JSON.stringify(newRecent)); } catch (e) {}
+    return pick;
 }
 
 function showQuizFeedback(message, isCorrect) {

@@ -108,63 +108,99 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function generateAIResponse(userMessage) {
         const lowerMessage = userMessage.toLowerCase();
+        const userName = window.Auth?.getStoredUserName?.() || '';
 
         // Check for keywords and generate appropriate responses
         if (lowerMessage.includes('expense') || lowerMessage.includes('spending') || lowerMessage.includes('spent')) {
-            return generateExpenseResponse();
+            return generateExpenseResponse(userName);
         } else if (lowerMessage.includes('save') || lowerMessage.includes('saving') || lowerMessage.includes('budget')) {
-            return generateSavingResponse();
+            return generateSavingResponse(userName);
         } else if (lowerMessage.includes('stock') || lowerMessage.includes('invest') || lowerMessage.includes('investment')) {
-            return generateStockResponse();
+            return generateStockResponse(userName);
         } else if (lowerMessage.includes('help') || lowerMessage.includes('how')) {
-            return generateHelpResponse();
+            return generateHelpResponse(userName);
         } else if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-            return "Hello! 👋 I'm here to help you with your finances. You can ask me about expenses, saving tips, investments, or budget advice!";
+            return `Hey${userName ? ' ' + userName : ''}! 👋 I got you. Ask me about expenses, savings, budgets, or investments. Let’s level up your money game. 💸`;
         } else if (lowerMessage.includes('thank')) {
-            return "You're welcome! 😊 Feel free to ask me anything else about your finances.";
+            return "Anytime! 🙌 If you need more tips, just hmu."
         } else {
-            return generateGenericResponse();
+            return generateGenericResponse(userName);
         }
     }
 
-    function generateExpenseResponse() {
+    function readExpenses() {
+        try {
+            const raw = localStorage.getItem('expenses');
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) { return []; }
+    }
+
+    function summarizeExpenses(expenses) {
+        const total = expenses.reduce((s, e) => s + (e.amount || 0), 0);
+        const byCat = {};
+        expenses.forEach(e => { byCat[e.category] = (byCat[e.category] || 0) + e.amount; });
+        const top = Object.entries(byCat).sort((a,b)=>b[1]-a[1])[0] || ['other',0];
+        return { total, byCat, topCategory: top[0], topAmount: top[1] };
+    }
+
+    function formatCurrency(n) { return `₹${(n||0).toFixed(2)}`; }
+
+    function prettifyCategory(cat) {
+        const map = { food:'🍕 Food', transport:'🚗 Transport', shopping:'🛍️ Shopping', entertainment:'🎬 Entertainment', bills:'⚡ Bills', other:'📦 Other' };
+        return map[cat] || cat;
+    }
+
+    function generateExpenseResponse(userName) {
+        const data = readExpenses();
+        if (data.length > 0) {
+            const { total, topCategory, topAmount } = summarizeExpenses(data);
+            const vibe = [
+                `Low-key flex, ${userName || 'fam'} — you've spent ${formatCurrency(total)} this month. Biggest drip: ${prettifyCategory(topCategory)} at ${formatCurrency(topAmount)}. Want a cap on that category? 🔒`,
+                `Heads up ${userName || 'bestie'}: total spend sits at ${formatCurrency(total)}. ${prettifyCategory(topCategory)} is eating most of the pie (${formatCurrency(topAmount)}). Wanna set a soft limit? 🍰`,
+                `Spending update: ${formatCurrency(total)} so far. Top category = ${prettifyCategory(topCategory)}. We can ghost unnecessary buys there if you want. 👻`
+            ];
+            return vibe[Math.floor(Math.random()*vibe.length)];
+        }
+        const fallback = [
+            "Looks a lil empty rn. Add a few expenses and I'll drop spicy insights. 🔥",
+            "No data yet, chief. Log some spends and I’ll read the vibes. 📊",
+            "Let’s start tracking — add one expense and I’ll crunch numbers fr. ⚡"
+        ];
+        return fallback[Math.floor(Math.random()*fallback.length)];
+    }
+
+    function generateSavingResponse(userName) {
+        const data = readExpenses();
+        const { byCat } = summarizeExpenses(data);
+        const likelyCut = Object.entries(byCat).sort((a,b)=>b[1]-a[1])[0];
+        const nudgeCat = likelyCut ? prettifyCategory(likelyCut[0]) : '🍕 Food';
+        const lines = [
+            `Pro tip ${userName || 'legend'}: try the 50/30/20 split. Also, trimming ${nudgeCat} a bit could save you 10-15% easy. 💾`,
+            `Set an auto-transfer on payday (pay yourself first). Also ngl, ${nudgeCat} has room to chill. 🧊`,
+            `Envelope method but make it digital — caps per category. Start with ${nudgeCat}. Your future self says ty. 🙏`
+        ];
+        return lines[Math.floor(Math.random()*lines.length)];
+    }
+
+    function generateStockResponse(userName) {
         const responses = [
-            "Based on your recent activity, you've spent ₹1,200 on shopping this week. Consider setting a weekly shopping budget to stay on track! 💡",
-            "Your expenses this month show you're spending 35% on food, 25% on transport, and 40% on other categories. Try to balance it out for better financial health! 📊",
-            "I noticed you've been spending more than usual. Here's a tip: track your expenses daily and review them weekly to spot patterns! 📈"
+            `Starter pack for ${userName || 'you'}: broad-market index funds/ETFs. Low noise, high chill. 📈`,
+            "Secure the bag first: 3–6 months emergency fund. Then invest. 🛡️",
+            "DCA hits different: same amount, regular intervals. Volatility who? 💼",
+            "Only invest money you won’t need in 3–5 years. Short-term swings be wild. ⚠️"
         ];
         return responses[Math.floor(Math.random() * responses.length)];
     }
 
-    function generateSavingResponse() {
-        const responses = [
-            "You can save 10% by reducing your takeout expenses. Try meal prepping on weekends! 🍱",
-            "I recommend saving at least 20% of your income. Start with small amounts and gradually increase. You've got this! 💪",
-            "Consider the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings. This is a great starting point! 📊",
-            "Try the envelope method: allocate cash for different categories. When it's gone, you stop spending in that category! 💰"
-        ];
-        return responses[Math.floor(Math.random() * responses.length)];
+    function generateHelpResponse(userName) {
+        return `I got you${userName ? ', ' + userName : ''}!\n\n• 📊 Read your expense vibes\n• 💰 Saving game plan\n• 📈 Investing starter kit\n• 🎯 Budget setup with caps\n\nSay the word and we roll. 🚀`;
     }
 
-    function generateStockResponse() {
+    function generateGenericResponse(userName) {
         const responses = [
-            "For beginners, I recommend starting with index funds or ETFs. They offer diversification and lower risk! 📈",
-            "Before investing, make sure you have an emergency fund covering 3-6 months of expenses. Safety first! 🛡️",
-            "Dollar-cost averaging is a great strategy: invest a fixed amount regularly, regardless of market conditions. This reduces the impact of volatility! 💼",
-            "Remember: don't invest money you'll need in the next 3-5 years. Stocks can be volatile in the short term! ⚠️"
-        ];
-        return responses[Math.floor(Math.random() * responses.length)];
-    }
-
-    function generateHelpResponse() {
-        return "I can help you with:\n\n• 📊 Analyzing your expenses\n• 💰 Saving strategies and tips\n• 📈 Investment advice\n• 🎯 Budget planning\n\nJust ask me anything! I'm here to help! 😊";
-    }
-
-    function generateGenericResponse() {
-        const responses = [
-            "That's an interesting question! Based on financial best practices, I'd recommend tracking your expenses first, then setting realistic savings goals. Would you like me to help you create a budget? 💡",
-            "Great question! To give you the best advice, could you tell me more about your current financial situation? For example, are you looking to save, invest, or track expenses? 🤔",
-            "I'm here to help you make smarter financial decisions! You can ask me about expenses, savings, investments, or budgets. What would you like to know? ✨"
+            `Let’s lock in a plan${userName ? ', ' + userName : ''}. Wanna track spends, set a budget, or peek investing? ✨`,
+            "Tell me your goal: save more, spend smarter, or invest steady? I’ll tailor it fr. 🤝",
+            "We can set caps per category and send nudges when you’re close. Want that? 🔔"
         ];
         return responses[Math.floor(Math.random() * responses.length)];
     }

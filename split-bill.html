@@ -24,7 +24,10 @@
                     <a href="expense-tracker.html" class="text-white/80 hover:text-purple-300 transition duration-300">Tracker</a>
                     <a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition duration-300">AI Assistant</a>
                     <a href="rewards.html" class="text-white/80 hover:text-purple-300 transition duration-300">Rewards</a>
+                    <a href="games.html" class="text-white/80 hover:text-purple-300 transition duration-300">Games</a>
                     <a href="contact.html" class="text-white/80 hover:text-purple-300 transition duration-300">Contact</a>
+                    <span id="navUserGreeting" class="text-white hidden"></span>
+                    <span id="navAuthCta"></span>
                 </div>
                 <button class="md:hidden text-white" id="mobileMenuBtn">
                     <i class="fas fa-bars text-2xl"></i>
@@ -134,6 +137,7 @@
                         <input type="text" id="itemName" placeholder="Item name" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
                         <input type="number" id="itemAmount" placeholder="Amount (₹)" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
                     </div>
+                    <div id="itemSuggestions" class="flex flex-wrap gap-2"></div>
                     <div>
                         <label class="text-white text-sm mb-2 block">Who Paid for This Item?</label>
                         <select id="itemBuyer" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" style="color: white;">
@@ -165,6 +169,10 @@
                     <button onclick="document.getElementById('receiptUpload').click()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
                         Choose File
                     </button>
+                    <div id="receiptPreview" class="mt-6 hidden">
+                        <img id="receiptImg" alt="Receipt preview" class="mx-auto max-h-60 rounded-xl border border-white/20" />
+                        <p id="receiptName" class="text-purple-200 text-sm mt-2"></p>
+                    </div>
                 </div>
                 <button id="simulateOCR" class="bg-gradient-to-r from-green-600 to-teal-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-110 transform transition duration-300">
                     🪄 Simulate OCR Auto-fill (Demo)
@@ -247,6 +255,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/split-bill.js"></script>
 </body>
 </html>

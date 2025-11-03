@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Money Games • Smart Social Wallet</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+	<nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+		<div class="container mx-auto px-4 py-4">
+			<div class="flex items-center justify-between">
+				<div class="flex items-center space-x-2">
+					<span class="text-3xl">💰</span>
+					<a href="index.html" class="text-2xl font-bold text-white">Smart Social Wallet</a>
+				</div>
+				<div class="hidden md:flex space-x-6">
+					<a href="index.html" class="text-white/80 hover:text-purple-300 transition">Home</a>
+					<a href="features.html" class="text-white/80 hover:text-purple-300 transition">Features</a>
+					<a href="split-bill.html" class="text-white/80 hover:text-purple-300 transition">Bill Split</a>
+					<a href="expense-tracker.html" class="text-white/80 hover:text-purple-300 transition">Tracker</a>
+					<a href="ai-assistant.html" class="text-white/80 hover:text-purple-300 transition">AI Assistant</a>
+					<a href="rewards.html" class="text-white/80 hover:text-purple-300 transition">Rewards</a>
+					<a href="games.html" class="text-white hover:text-purple-300 transition font-semibold">Games</a>
+					<a href="contact.html" class="text-white/80 hover:text-purple-300 transition">Contact</a>
+					<span id="navUserGreeting" class="text-white hidden"></span>
+					<span id="navAuthCta"></span>
+				</div>
+				<button class="md:hidden text-white" id="mobileMenuBtn"><i class="fas fa-bars text-2xl"></i></button>
+			</div>
+		</div>
+	</nav>
+
+	<section class="container mx-auto px-4 py-12 max-w-5xl">
+		<h1 class="text-5xl font-bold text-white text-center mb-2">🎮 Money Games</h1>
+		<p class="text-xl text-purple-200 text-center mb-8">Learn by playing. Get good, get rich (responsibly). ✨</p>
+
+		<!-- Game 1: Budget Builder -->
+		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-8">
+			<h2 class="text-2xl font-bold text-white mb-4">🧩 Budget Builder</h2>
+			<p class="text-purple-200 mb-4">You have <span class="font-semibold text-white">₹10,000</span>. Allocate to categories. Hit the target ranges to win XP!</p>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div>
+					<label class="text-white text-sm mb-1 block">Needs (50% target)</label>
+					<input id="bbNeeds" type="number" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 5000">
+				</div>
+				<div>
+					<label class="text-white text-sm mb-1 block">Wants (30% target)</label>
+					<input id="bbWants" type="number" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 3000">
+				</div>
+				<div>
+					<label class="text-white text-sm mb-1 block">Savings (20% target)</label>
+					<input id="bbSavings" type="number" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 2000">
+				</div>
+				<div class="flex items-end">
+					<button id="bbCheck" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">Check My Budget ✅</button>
+				</div>
+			</div>
+			<div id="bbResult" class="hidden mt-4 p-4 rounded-lg border"></div>
+		</div>
+
+		<!-- Game 2: Savings Streak -->
+		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-8">
+			<h2 class="text-2xl font-bold text-white mb-4">🔥 Savings Streak</h2>
+			<p class="text-purple-200 mb-4">Lock in a daily micro-saving and keep the streak alive for bonus XP.</p>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+				<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<label class="text-white text-sm mb-1 block">Today's micro-saving (₹)</label>
+						<input id="ssAmount" type="number" min="10" step="10" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 50">
+					</div>
+					<div class="flex items-end">
+						<button id="ssLog" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">Log Today’s Save ✅</button>
+					</div>
+				</div>
+				<div>
+					<div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+						<div class="text-purple-200 text-sm">Current Streak</div>
+						<div id="ssStreak" class="text-3xl font-bold text-white">0 days</div>
+					</div>
+				</div>
+			</div>
+			<div id="ssInfo" class="hidden mt-4 p-4 rounded-lg border"></div>
+		</div>
+
+		<!-- Game 3: Utilization Tuner -->
+		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20">
+			<h2 class="text-2xl font-bold text-white mb-4">🎯 Utilization Tuner</h2>
+			<p class="text-purple-200 mb-4">Keep credit utilization under <span class="font-semibold text-white">30%</span>. Tune the sliders and lock the sweet spot for XP.</p>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+				<div>
+					<label class="text-white text-sm mb-1 block">Credit Limit (₹)</label>
+					<input id="utilLimit" type="range" min="10000" max="200000" step="5000" class="w-full">
+					<div class="text-purple-200 mt-1"><span class="text-white font-semibold" id="utilLimitVal">₹50,000</span></div>
+				</div>
+				<div>
+					<label class="text-white text-sm mb-1 block">Current Balance (₹)</label>
+					<input id="utilBalance" type="range" min="0" max="200000" step="2500" class="w-full">
+					<div class="text-purple-200 mt-1"><span class="text-white font-semibold" id="utilBalanceVal">₹10,000</span></div>
+				</div>
+			</div>
+			<div class="mt-4 flex items-center justify-between">
+				<div class="text-white">Utilization: <span id="utilPct" class="font-bold">—%</span></div>
+				<button id="utilCheck" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">Lock It In ✅</button>
+			</div>
+			<div id="utilInfo" class="hidden mt-4 p-4 rounded-lg border"></div>
+		</div>
+
+		<!-- Game 4: Savings Tree -->
+		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-8">
+			<h2 class="text-2xl font-bold text-white mb-2">🌳 Savings Tree</h2>
+			<p class="text-purple-200 mb-4">As your money grows, your tree grows too. Stay consistent and watch it bloom. ✨</p>
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div class="lg:col-span-2">
+					<div class="bg-gradient-to-b from-green-700/30 to-blue-700/20 rounded-2xl border border-white/10 p-4">
+						<svg id="treeCanvas" viewBox="0 0 600 400" class="w-full h-96 rounded-xl bg-white/5">
+							<!-- trunk & ground will be injected dynamically -->
+						</svg>
+					</div>
+				</div>
+				<div>
+					<div class="space-y-3">
+						<label class="text-white text-sm block">Add a micro-saving (₹)</label>
+						<div class="flex space-x-2">
+							<input id="stAmount" type="number" min="10" step="10" placeholder="e.g., 50" class="flex-1 p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
+							<button id="stAddLeaf" class="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:scale-105 transition">Add Leaf 🍃</button>
+						</div>
+						<button id="stAddBranch" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:scale-105 transition">Complete Weekly Goal ➕ Branch</button>
+						<button id="stCheckMilestone" class="w-full bg-gradient-to-r from-pink-600 to-rose-600 text-white px-4 py-3 rounded-lg font-semibold hover:scale-105 transition">Check Milestones 🌸</button>
+						<div class="bg-white/10 rounded-2xl p-4 border border-white/10">
+							<div class="text-purple-200 text-sm">Total Saved</div>
+							<div id="stTotal" class="text-2xl font-bold text-white">₹0</div>
+						</div>
+						<div id="stMessage" class="hidden p-3 rounded-lg border mt-2"></div>
+						<div class="mt-4 text-center text-white italic" id="stQuote">“As your money grows, your tree grows too.”</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Game 5: Needs vs Wants -->
+		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-8">
+			<h2 class="text-2xl font-bold text-white mb-4">🧠 Needs vs Wants</h2>
+			<p class="text-purple-200 mb-4">Classify the item. Get it right to earn XP and build better money habits.</p>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+				<div class="md:col-span-2">
+					<div class="bg-white/10 rounded-2xl p-6 border border-white/10 text-center">
+						<div class="text-5xl mb-2" id="nvwIcon">🍕</div>
+						<div class="text-2xl text-white font-bold" id="nvwItem">Pizza Takeout</div>
+					</div>
+				</div>
+				<div class="space-y-3">
+					<button id="nvwNeed" class="w-full bg-green-600/80 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition">Need ✅</button>
+					<button id="nvwWant" class="w-full bg-yellow-600/80 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg font-semibold transition">Want ✨</button>
+					<div id="nvwMsg" class="hidden p-3 rounded-lg border"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+		<div class="container mx-auto px-4 py-8">
+			<div class="flex flex-col md:flex-row justify-between items-center">
+				<div class="mb-4 md:mb-0">
+					<div class="flex items-center space-x-2">
+						<span class="text-2xl">💰</span>
+						<span class="text-xl font-bold text-white">Smart Social Wallet</span>
+					</div>
+					<p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+				</div>
+				<div class="flex space-x-6">
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-linkedin"></i></a>
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-instagram"></i></a>
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-twitter"></i></a>
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-github"></i></a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script src="js/main.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/games.js"></script>
+</body>
+</html>
+
+

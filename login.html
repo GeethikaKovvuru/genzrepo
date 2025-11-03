@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login • Smart Social Wallet</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen">
+	<nav class="bg-white/10 backdrop-blur-md sticky top-0 z-50 border-b border-white/20">
+		<div class="container mx-auto px-4 py-4">
+			<div class="flex items-center justify-between">
+				<div class="flex items-center space-x-2">
+					<span class="text-3xl">💰</span>
+					<a href="index.html" class="text-2xl font-bold text-white">Smart Social Wallet</a>
+				</div>
+				<div class="hidden md:flex items-center space-x-6">
+					<a href="index.html" class="text-white/80 hover:text-purple-300 transition">Home</a>
+					<span id="navUserGreeting" class="text-white hidden"></span>
+					<span id="navAuthCta"></span>
+				</div>
+				<button class="md:hidden text-white" id="mobileMenuBtn">
+					<i class="fas fa-bars text-2xl"></i>
+				</button>
+			</div>
+		</div>
+	</nav>
+
+	<section class="container mx-auto px-4 py-20">
+		<div class="max-w-md mx-auto bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+			<h1 class="text-4xl font-bold text-white mb-2">Welcome 👋</h1>
+			<p class="text-purple-200 mb-6">Tell us your vibe-name so we can personalize your journey.</p>
+			<div class="space-y-4">
+				<label class="text-white block">Your Name</label>
+				<input id="loginName" type="text" maxlength="30" placeholder="e.g., Anya, Sid, Maverick"
+					class="w-full p-4 rounded-2xl bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+				<button id="loginBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">Enter the Moneyverse 🚀</button>
+				<p id="loginError" class="text-red-300 text-sm hidden">Please enter a valid name.</p>
+			</div>
+		</div>
+	</section>
+
+	<footer class="bg-black/30 backdrop-blur-md border-t border-white/20 mt-20">
+		<div class="container mx-auto px-4 py-8">
+			<div class="flex flex-col md:flex-row justify-between items-center">
+				<div class="mb-4 md:mb-0">
+					<div class="flex items-center space-x-2">
+						<span class="text-2xl">💰</span>
+						<span class="text-xl font-bold text-white">Smart Social Wallet</span>
+					</div>
+					<p class="text-purple-200 mt-2">© 2025 Smart Social Wallet. All rights reserved.</p>
+				</div>
+				<div class="flex space-x-6">
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-linkedin"></i></a>
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-instagram"></i></a>
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-twitter"></i></a>
+					<a href="#" class="text-white/80 hover:text-purple-300 transition duration-300 text-2xl"><i class="fab fa-github"></i></a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script src="js/main.js"></script>
+	<script src="js/auth.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const input = document.getElementById('loginName');
+			const btn = document.getElementById('loginBtn');
+			const err = document.getElementById('loginError');
+			btn.addEventListener('click', function() {
+				const name = (input.value || '').trim();
+				if (!name || name.length < 2) {
+					err.classList.remove('hidden');
+					return;
+				}
+				err.classList.add('hidden');
+				window.Auth?.setStoredUserName(name);
+				window.location.href = 'index.html';
+			});
+			input.addEventListener('keypress', function(e) {
+				if (e.key === 'Enter') {
+					btn.click();
+				}
+			});
+		});
+	</script>
+</body>
+</html>
+
+
