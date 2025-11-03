@@ -214,6 +214,50 @@
             </div>
         </div>
 
+        <!-- Group Finance Arena: Weekly Challenges -->
+        <div class="max-w-4xl mx-auto mt-10">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <h2 class="text-3xl font-bold text-white mb-4">👥 Group Finance Arena</h2>
+                <p class="text-purple-200 mb-6">Create a weekly challenge and track who’s leading — “Save the Most This Week” or “Budget Battle”.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <input id="challengeName" type="text" placeholder="Challenge name" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                    <input id="challengeTarget" type="number" placeholder="Target ₹ (optional)" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                    <button id="startChallengeBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold">Start Challenge</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <input id="participantName" type="text" placeholder="Participant name" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                    <input id="participantAmount" type="number" placeholder="Saved/Score ₹" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                    <button id="addParticipantBtn" class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold">Add / Update</button>
+                </div>
+                <div id="challengeMsg" class="hidden p-3 rounded-lg border mb-4"></div>
+                <div id="challengeBoard" class="space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- Blockchain Transparency Mode (Optional) -->
+        <div class="max-w-4xl mx-auto mt-10">
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-3xl font-bold text-white">⛓️‍💥 Blockchain Mode</h2>
+                    <label class="flex items-center space-x-2 text-white/80">
+                        <input type="checkbox" id="bcEnable" class="w-5 h-5 rounded border-white/30 bg-white/20">
+                        <span>Enable</span>
+                    </label>
+                </div>
+                <p class="text-purple-200 mb-4">Deploy a transparent mock contract for this split. All settlement actions will be logged immutably (demo).</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                    <input id="bcName" type="text" placeholder="Contract name (e.g., Goa Trip Split)" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                    <button id="bcDeploy" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold">Deploy Contract</button>
+                    <div class="text-white/80 text-sm" id="bcAddress">—</div>
+                </div>
+                <div id="bcMsg" class="hidden p-3 rounded-lg border mb-4"></div>
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Ledger</h3>
+                    <div id="bcLedger" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Navigation Buttons -->
         <div class="max-w-4xl mx-auto mt-8 flex justify-between">
             <button id="prevBtn" class="bg-white/20 text-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transform transition duration-300 hidden">

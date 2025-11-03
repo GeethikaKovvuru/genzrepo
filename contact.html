@@ -43,13 +43,13 @@
     </nav>
 
     <!-- Main Content -->
-    <section class="container mx-auto px-4 py-12 max-w-4xl">
+    <section class="container mx-auto px-4 py-12 max-w-6xl">
         <div class="text-center mb-12">
             <h1 class="text-5xl font-bold text-white mb-4">Let's Connect 📞</h1>
             <p class="text-xl text-purple-200">Have questions? We'd love to hear from you!</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Contact Form -->
             <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
                 <h2 class="text-2xl font-bold text-white mb-6">Send us a Message</h2>
@@ -75,8 +75,8 @@
                 </div>
             </div>
 
-            <!-- Contact Info -->
-            <div class="space-y-6">
+            <!-- Contact Info & Mentorship -->
+            <div class="space-y-6 lg:col-span-2">
                 <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
                     <h2 class="text-2xl font-bold text-white mb-6">Get in Touch</h2>
                     <div class="space-y-6">
@@ -131,6 +131,40 @@
                     </div>
                 </div>
 
+                <!-- Peer Mentorship Marketplace -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                    <h2 class="text-2xl font-bold text-white mb-6">🤝 Peer Mentorship Marketplace</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-white font-semibold mb-3">🧑‍🏫 Become a Mentor</h3>
+                            <div class="space-y-3">
+                                <input id="mentorName" type="text" placeholder="Your name" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                                <input id="mentorAreas" type="text" placeholder="Expertise (e.g., Budgeting, Credit)" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                                <button id="addMentorBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">List as Mentor</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold mb-3">🙋 Request Mentorship</h3>
+                            <div class="space-y-3">
+                                <input id="reqTopic" type="text" placeholder="Topic (e.g., Crypto Basics)" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                                <textarea id="reqDetails" placeholder="What help do you need?" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50"></textarea>
+                                <button id="addRequestBtn" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">Post Request</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="peerMsg" class="hidden p-2 rounded-lg border mt-4"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <h3 class="text-white font-semibold mb-3">👨‍👩‍👧‍👦 Mentors</h3>
+                            <div id="mentorsList" class="space-y-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold mb-3">📋 Requests</h3>
+                            <div id="requestsList" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick Links -->
                 <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
                     <h2 class="text-2xl font-bold text-white mb-4">Quick Links</h2>
@@ -175,6 +209,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/contact.js"></script>
     <script>
         // Contact form handler
         document.getElementById('contactForm').addEventListener('submit', function(e) {

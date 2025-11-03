@@ -108,37 +108,6 @@
 			<div id="utilInfo" class="hidden mt-4 p-4 rounded-lg border"></div>
 		</div>
 
-		<!-- Game 4: Savings Tree -->
-		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-8">
-			<h2 class="text-2xl font-bold text-white mb-2">🌳 Savings Tree</h2>
-			<p class="text-purple-200 mb-4">As your money grows, your tree grows too. Stay consistent and watch it bloom. ✨</p>
-			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-				<div class="lg:col-span-2">
-					<div class="bg-gradient-to-b from-green-700/30 to-blue-700/20 rounded-2xl border border-white/10 p-4">
-						<svg id="treeCanvas" viewBox="0 0 600 400" class="w-full h-96 rounded-xl bg-white/5">
-							<!-- trunk & ground will be injected dynamically -->
-						</svg>
-					</div>
-				</div>
-				<div>
-					<div class="space-y-3">
-						<label class="text-white text-sm block">Add a micro-saving (₹)</label>
-						<div class="flex space-x-2">
-							<input id="stAmount" type="number" min="10" step="10" placeholder="e.g., 50" class="flex-1 p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
-							<button id="stAddLeaf" class="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:scale-105 transition">Add Leaf 🍃</button>
-						</div>
-						<button id="stAddBranch" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:scale-105 transition">Complete Weekly Goal ➕ Branch</button>
-						<button id="stCheckMilestone" class="w-full bg-gradient-to-r from-pink-600 to-rose-600 text-white px-4 py-3 rounded-lg font-semibold hover:scale-105 transition">Check Milestones 🌸</button>
-						<div class="bg-white/10 rounded-2xl p-4 border border-white/10">
-							<div class="text-purple-200 text-sm">Total Saved</div>
-							<div id="stTotal" class="text-2xl font-bold text-white">₹0</div>
-						</div>
-						<div id="stMessage" class="hidden p-3 rounded-lg border mt-2"></div>
-						<div class="mt-4 text-center text-white italic" id="stQuote">“As your money grows, your tree grows too.”</div>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<!-- Game 5: Needs vs Wants -->
 		<div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-8">

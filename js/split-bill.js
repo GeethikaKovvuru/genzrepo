@@ -24,6 +24,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const receiptUpload = document.getElementById('receiptUpload');
     const sendNotificationsBtn = document.getElementById('sendNotifications');
 
+    // Group Finance Arena elements
+    const startChallengeBtn = document.getElementById('startChallengeBtn');
+    const addParticipantBtn = document.getElementById('addParticipantBtn');
+    const challengeMsg = document.getElementById('challengeMsg');
+    const challengeBoard = document.getElementById('challengeBoard');
+
+    // Blockchain mode elements
+    const bcEnable = document.getElementById('bcEnable');
+    const bcDeploy = document.getElementById('bcDeploy');
+    const bcName = document.getElementById('bcName');
+    const bcAddress = document.getElementById('bcAddress');
+    const bcLedger = document.getElementById('bcLedger');
+    const bcMsg = document.getElementById('bcMsg');
+
     // Scenario Selection
     scenarioButtons.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -234,6 +248,72 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 3000);
         });
     }
+
+    // ===== Group Finance Arena =====
+    const CHALLENGE_KEY = 'group_challenge_v1';
+    function loadChallenge(){
+        try { return JSON.parse((window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, CHALLENGE_KEY) || '{}'); } catch(e){ return {}; }
+    }
+    function saveChallenge(c){
+        try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, CHALLENGE_KEY, JSON.stringify(c)); } catch(e){}
+    }
+    function msgChallenge(text, type){
+        if (!challengeMsg) return;
+        const style = type==='ok' ? 'bg-green-500/20 border-green-500/50' : 'bg-yellow-500/20 border-yellow-500/50';
+        challengeMsg.className = `p-3 rounded-lg border mb-4 ${style}`;
+        challengeMsg.textContent = text;
+        challengeMsg.classList.remove('hidden');
+        setTimeout(()=> challengeMsg.classList.add('hidden'), 2000);
+    }
+    function renderChallenge(){
+        if (!challengeBoard) return;
+        const c = loadChallenge();
+        if (!c.name) { challengeBoard.innerHTML = '<p class="text-purple-200">No active challenge. Create one above.</p>'; return; }
+        const entries = Object.entries(c.scores || {}).sort((a,b)=> (b[1]||0) - (a[1]||0));
+        challengeBoard.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-white font-semibold">${c.name}</div>
+                <div class="text-purple-200 text-sm">Target: ${c.target ? '₹'+c.target : '—'}</div>
+            </div>
+            ${entries.map(([name,amt],i)=>`<div class="p-3 rounded-lg bg-white/10 border border-white/10 flex items-center justify-between">
+                <div class="text-white">#${i+1} ${name}</div>
+                <div class="text-green-300 font-semibold">₹${(amt||0).toFixed(0)}</div>
+            </div>`).join('')}
+        `;
+    }
+    startChallengeBtn?.addEventListener('click', function(){
+        const name = (document.getElementById('challengeName').value||'').trim();
+        const target = parseFloat(document.getElementById('challengeTarget').value)||0;
+        if (!name) { msgChallenge('Enter a challenge name', 'warn'); return; }
+        saveChallenge({ name, target: target>0?target:null, scores:{} });
+        renderChallenge();
+        msgChallenge('Challenge started ✅','ok');
+    });
+    addParticipantBtn?.addEventListener('click', function(){
+        const pname = (document.getElementById('participantName').value||'').trim();
+        const pamt = parseFloat(document.getElementById('participantAmount').value)||0;
+        if (!pname || pamt<0) { msgChallenge('Enter name and amount', 'warn'); return; }
+        const c = loadChallenge();
+        if (!c.name) { msgChallenge('Start a challenge first', 'warn'); return; }
+        c.scores = c.scores || {};
+        c.scores[pname] = (c.scores[pname]||0) + pamt;
+        saveChallenge(c);
+        renderChallenge();
+        msgChallenge('Updated ✅','ok');
+    });
+    renderChallenge();
+
+    // ===== Blockchain Mode (mock) =====
+    const BC_KEY = 'blockchain_contract_v1';
+    function loadBC(){ try { return JSON.parse((window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, BC_KEY)||'{}'); } catch(e){ return {}; } }
+    function saveBC(c){ try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, BC_KEY, JSON.stringify(c)); } catch(e){} }
+    function msgBC(text, type){ if(!bcMsg) return; const style=type==='ok'?'bg-green-500/20 border-green-500/50':'bg-yellow-500/20 border-yellow-500/50'; bcMsg.className=`p-3 rounded-lg border mb-4 ${style}`; bcMsg.textContent=text; bcMsg.classList.remove('hidden'); setTimeout(()=>bcMsg.classList.add('hidden'),2000); }
+    function randomAddr(){ return '0x' + Math.random().toString(16).slice(2,10) + Math.random().toString(16).slice(2,10); }
+    function renderBC(){ const c=loadBC(); if (!bcAddress) return; bcAddress.textContent = c.address ? `Address: ${c.address}` : '—'; if (bcLedger) { const logs=(c.ledger||[]).slice().reverse(); bcLedger.innerHTML = logs.map(l=>`<div class="p-2 rounded bg-white/10 border border-white/10 text-white text-sm">${l}</div>`).join('') || '<p class="text-purple-200">No logs yet.</p>'; } if (bcEnable) bcEnable.checked = !!c.enabled; }
+    function appendLog(entry){ const c=loadBC(); c.ledger=c.ledger||[]; c.ledger.push(`${new Date().toLocaleString()} • ${entry}`); saveBC(c); renderBC(); }
+    bcEnable?.addEventListener('change', function(){ const c=loadBC(); c.enabled = !!this.checked; saveBC(c); msgBC(c.enabled?'Blockchain mode enabled':'Blockchain mode disabled','ok'); });
+    bcDeploy?.addEventListener('click', function(){ const name=(bcName?.value||'Split Contract').trim(); if (!name) { msgBC('Enter contract name','warn'); return; } const c={ enabled: bcEnable?.checked||false, address: randomAddr(), name, ledger: []}; saveBC(c); renderBC(); appendLog(`Deployed ${name}`); msgBC('Contract deployed ✅','ok'); });
+    renderBC();
 
     // Set up event listeners for friend name inputs (only once)
     function setupFriendNameListeners() {

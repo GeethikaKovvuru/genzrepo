@@ -77,6 +77,10 @@
 				}
 				err.classList.add('hidden');
 				window.Auth?.setStoredUserName(name);
+				try {
+					localStorage.setItem('resetSavingsTree', '1');
+					localStorage.setItem('treeSinceLogin', new Date().toISOString());
+				} catch (e) {}
 				window.location.href = 'index.html';
 			});
 			input.addEventListener('keypress', function(e) {

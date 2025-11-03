@@ -56,4 +56,22 @@ document.addEventListener('DOMContentLoaded', function() {
 // Expose for other scripts
 window.Auth = { getStoredUserName, setStoredUserName, clearStoredUserName };
 
+// Per-user localStorage helpers
+function getCurrentUser() { return getStoredUserName(); }
+function ns(key) {
+	const u = getCurrentUser();
+	return u ? `u:${u}:${key}` : key;
+}
+function userGetItem(key) {
+	try { return localStorage.getItem(ns(key)); } catch(e){ return null; }
+}
+function userSetItem(key, val) {
+	try { localStorage.setItem(ns(key), val); } catch(e){}
+}
+function userRemoveItem(key) {
+	try { localStorage.removeItem(ns(key)); } catch(e){}
+}
+
+window.Auth.userStorage = { getItem: userGetItem, setItem: userSetItem, removeItem: userRemoveItem, ns };
+
 

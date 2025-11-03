@@ -3,24 +3,43 @@
 
 let expenses = [];
 let expenseChart = null;
-const monthlyBudget = 10000;
+let monthlyBudget = 10000;
 
 document.addEventListener('DOMContentLoaded', function() {
     const addExpenseBtn = document.getElementById('addExpenseBtn');
+    const budgetInput = document.getElementById('budgetInput');
+    const saveBudgetBtn = document.getElementById('saveBudgetBtn');
     
     // Load expenses from localStorage
     loadExpenses();
+    loadBudget();
 
     // Initialize chart
     initChart();
 
-    // Initialize Savings Tree
-    initSavingsTree();
+    // Init animated Savings Tree (session-based)
+    initSavingsTreeSession();
 
     // Add Expense Button
     if (addExpenseBtn) {
         addExpenseBtn.addEventListener('click', function() {
             addExpense();
+        });
+    }
+
+    // Budget save
+    if (saveBudgetBtn && budgetInput) {
+        saveBudgetBtn.addEventListener('click', function() {
+            const val = parseFloat(budgetInput.value);
+            if (!val || val < 100) {
+                alert('Please enter a valid monthly budget.');
+                return;
+            }
+            monthlyBudget = val;
+            saveBudget();
+            updateStats();
+            updateChart();
+            updateSavingsTreeSession();
         });
     }
 
@@ -38,13 +57,19 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNotifications();
     updateStats();
     renderExpenses();
-    updateSavingsTree();
+    updateSavingsTreeSession();
+    updateEcoTracker();
+    updateHealthScore();
+
+    // Savings Pots init
+    initPots();
 });
 
 function addExpense() {
     const category = document.getElementById('expenseCategory').value;
     const amount = parseFloat(document.getElementById('expenseAmount').value);
     const date = document.getElementById('expenseDate').value;
+    const eco = !!document.getElementById('expenseEco')?.checked;
 
     if (!amount || amount <= 0 || !date) {
         alert('Please fill in all fields with valid values!');
@@ -55,7 +80,8 @@ function addExpense() {
         id: Date.now(),
         category: category,
         amount: amount,
-        date: date
+        date: date,
+        eco: eco
     };
 
     expenses.push(expense);
@@ -64,7 +90,22 @@ function addExpense() {
     updateChart();
     updateNotifications();
     renderExpenses();
-    updateSavingsTree();
+    // Event-driven leaf delta: savings = credit (grow), others = debit (shed)
+    try {
+        const canvas = document.getElementById('et2Canvas');
+        if (canvas) {
+            const leafUnit = (monthlyBudget || 10000) / TOTAL_LEAVES;
+            const units = Math.max(0, Math.floor((amount || 0) / Math.max(1, leafUnit)));
+            if (category === 'savings') {
+                for (let i=0;i<units;i++) addEt2Leaf(canvas, false);
+            } else {
+                for (let i=0;i<units;i++) removeEt2Leaf(canvas, false);
+            }
+        }
+    } catch (e) {}
+    updateSavingsTreeSession();
+    updateEcoTracker();
+    updateHealthScore();
 
     // Clear form
     document.getElementById('expenseAmount').value = '';
@@ -72,24 +113,57 @@ function addExpense() {
 }
 
 function deleteExpense(id) {
+    const expToDelete = expenses.find(exp => exp.id === id);
     expenses = expenses.filter(exp => exp.id !== id);
     saveExpenses();
     updateStats();
     updateChart();
     renderExpenses();
     updateNotifications();
-    updateSavingsTree();
+    try {
+        const canvas = document.getElementById('et2Canvas');
+        if (canvas && expToDelete) {
+            const leafUnit = (monthlyBudget || 10000) / TOTAL_LEAVES;
+            const units = Math.max(0, Math.floor((expToDelete.amount || 0) / Math.max(1, leafUnit)));
+            if (expToDelete.category === 'savings') {
+                // deleting a credit => remove leaves that were added
+                for (let i=0;i<units;i++) removeEt2Leaf(canvas, false);
+            } else {
+                // deleting a debit => add leaves back
+                for (let i=0;i<units;i++) addEt2Leaf(canvas, false);
+            }
+        }
+    } catch (e) {}
+    updateSavingsTreeSession();
+    updateEcoTracker();
+    updateHealthScore();
 }
 
 function saveExpenses() {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
+    const set = (window.Auth?.userStorage?.setItem||localStorage.setItem).bind(localStorage);
+    set('expenses', JSON.stringify(expenses));
 }
 
 function loadExpenses() {
-    const saved = localStorage.getItem('expenses');
+    const get = (window.Auth?.userStorage?.getItem||localStorage.getItem).bind(localStorage);
+    const saved = get('expenses');
     if (saved) {
         expenses = JSON.parse(saved);
     }
+}
+
+function saveBudget() {
+    try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, 'monthlyBudget', String(monthlyBudget)); } catch (e) {}
+}
+
+function loadBudget() {
+    try {
+        const raw = (window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, 'monthlyBudget');
+        const b = parseFloat(raw);
+        if (!isNaN(b) && b > 0) monthlyBudget = b;
+    } catch (e) {}
+    const budgetInput = document.getElementById('budgetInput');
+    if (budgetInput) budgetInput.value = monthlyBudget;
 }
 
 function updateStats() {
@@ -312,92 +386,252 @@ function updateNotifications() {
     }).join('');
 }
 
-// ===== Savings Tree (embedded) =====
-const LEAF_UNIT = 100; // ₹ per leaf
-function initSavingsTree() {
-    const canvas = document.getElementById('etTreeCanvas');
+// ===== Eco-Tracker =====
+function updateEcoTracker(){
+    const coinsEl = document.getElementById('greenCoins');
+    const prog = document.getElementById('greenProgress');
+    if (!coinsEl || !prog) return;
+    const now = new Date();
+    const ecoSum = expenses
+        .filter(e => e.eco && isSameMonthYear(new Date(e.date), now))
+        .reduce((s,e)=> s + (e.amount||0), 0);
+    const coins = Math.floor(ecoSum / 100);
+    coinsEl.textContent = String(coins);
+    const monthlyBase = monthlyBudget || 10000;
+    const pct = Math.min(100, Math.round((ecoSum / Math.max(1, monthlyBase)) * 100));
+    prog.style.width = pct + '%';
+}
+
+// ===== Health Score =====
+function updateHealthScore(){
+    const scoreEl = document.getElementById('healthScore');
+    const emojiEl = document.getElementById('healthEmoji');
+    const breakdownEl = document.getElementById('healthBreakdown');
+    if (!scoreEl || !emojiEl || !breakdownEl) return;
+
+    const totalSpending = expenses.reduce((s,e)=> s + (e.amount||0), 0);
+    const percentageUsed = Math.max(0, Math.min(100, (totalSpending / Math.max(1, monthlyBudget)) * 100));
+    const budgetScore = 100 - percentageUsed; // more remaining = higher score
+
+    const now = new Date();
+    const ecoSum = expenses.filter(e=>e.eco && isSameMonthYear(new Date(e.date), now)).reduce((s,e)=> s + (e.amount||0), 0);
+    const ecoScore = Math.min(100, (ecoSum / Math.max(1, monthlyBudget)) * 100);
+
+    // streak: max streak from pots
+    let pots = [];
+    try { pots = JSON.parse((window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, 'smart_pots_v1')||'[]'); } catch(e){}
+    const maxStreak = pots.reduce((m,p)=> Math.max(m, p.streak||0), 0);
+    const streakScore = Math.min(100, (maxStreak||0) * 10);
+
+    const score = Math.round(0.5*budgetScore + 0.3*ecoScore + 0.2*streakScore);
+    scoreEl.textContent = String(score);
+    const emoji = score>=85?'🟢':score>=70?'🟡':score>=50?'🟠':'🔴';
+    emojiEl.textContent = emoji;
+    breakdownEl.textContent = `Budget: ${budgetScore.toFixed(0)} • Eco: ${ecoScore.toFixed(0)} • Streak: ${streakScore.toFixed(0)}`;
+}
+
+// ===== Animated Savings Tree (session-based) =====
+const TOTAL_LEAVES = 100;
+function initSavingsTreeSession() {
+    const canvas = document.getElementById('et2Canvas');
     if (!canvas) return;
-    // draw ground and trunk once
-    if (!canvas.querySelector('#et-ground')) {
-        const ground = svgEl('rect', { id:'et-ground', x:0, y:360, width:600, height:40, fill:'rgba(16,185,129,0.5)' });
+
+    // Reset on login flag
+    try {
+        if (localStorage.getItem('resetSavingsTree') === '1') {
+            canvas.innerHTML = '';
+            localStorage.removeItem('resetSavingsTree');
+        }
+    } catch (e) {}
+
+    // Draw ground and trunk
+    if (!canvas.querySelector('#et2-ground')) {
+        const ground = svgEl('rect', { id:'et2-ground', x:0, y:360, width:600, height:40, fill:'rgba(16,185,129,0.5)' });
         canvas.appendChild(ground);
     }
-    if (!canvas.querySelector('#et-trunk')) {
-        const trunk = svgEl('rect', { id:'et-trunk', x:290, y:200, width:20, height:160, rx:8, fill:'#7c4a1f', opacity:0 });
+    if (!canvas.querySelector('#et2-trunk')) {
+        const trunk = svgEl('rect', { id:'et2-trunk', x:290, y:200, width:20, height:160, rx:8, fill:'#7c4a1f', opacity:'0' });
         canvas.appendChild(trunk);
         animateIn(trunk);
     }
-    cycleQuotes();
-}
 
-function updateSavingsTree() {
-    const canvas = document.getElementById('etTreeCanvas');
-    if (!canvas) return;
-
-    // Calculate baseline and current leaves based on expenses
-    const baselineLeaves = Math.max(0, Math.floor((monthlyBudget || 10000) / LEAF_UNIT));
-    const sumSavings = expenses.filter(e => e.category === 'savings').reduce((s, e) => s + e.amount, 0);
-    const sumSpending = expenses.filter(e => e.category !== 'savings').reduce((s, e) => s + e.amount, 0);
-    const savingsUnits = Math.floor(sumSavings / LEAF_UNIT);
-    const spendUnits = Math.floor(sumSpending / LEAF_UNIT);
-    const targetLeaves = Math.max(0, Math.min(baselineLeaves, baselineLeaves + savingsUnits - spendUnits));
-
-    const existingLeaves = canvas.querySelectorAll('.et-leaf').length;
-    if (existingLeaves < targetLeaves) {
-        for (let i=0; i<targetLeaves-existingLeaves; i++) addEtLeaf(canvas, true);
-    } else if (existingLeaves > targetLeaves) {
-        for (let i=0; i<existingLeaves-targetLeaves; i++) removeEtLeaf(canvas, true);
+    // Draw baseline branches for a visible canopy
+    if (!canvas.querySelector('.et2-branch')) {
+        drawEt2Branches(canvas);
     }
 
-    // Weekly branch check using savings only
-    const weekKey = getWeekKey(new Date());
-    const weekSum = expenses.filter(e => e.category === 'savings' && getWeekKey(new Date(e.date)) === weekKey)
-        .reduce((s, e) => s + e.amount, 0);
-    if (weekSum >= 500 && !canvas.querySelector(`.et-branch[data-week="${weekKey}"]`)) {
-        addEtBranch(canvas, weekKey);
-        toastEt('Weekly savings goal hit! Branch added 🌿','success');
+    // Ensure full leaves baseline at session start
+    const since = getTreeSessionStart();
+    const existingLeaves = canvas.querySelectorAll('.et2-leaf').length;
+    if (existingLeaves < TOTAL_LEAVES) {
+        for (let i=0;i<TOTAL_LEAVES-existingLeaves;i++) addEt2Leaf(canvas, true);
     }
-
-    // Milestones based on total savings
-    const milestones = [1000, 5000, 10000, 20000];
-    milestones.forEach(m => {
-        const key = `et-bloom-${m}`;
-        if (sumSavings >= m && !canvas.querySelector(`[data-bloom="${key}"]`)) {
-            addEtBloom(canvas, key);
-            toastEt('Milestone bloom unlocked! 🌸','success');
-        }
-    });
-
-    const totalEl = document.getElementById('etStTotal');
-    if (totalEl) totalEl.textContent = `₹${sumSavings.toFixed(2)}`;
 }
 
-function addEtBranch(canvas, weekKey) {
+// ===== Smart Savings Pots =====
+const POTS_KEY = 'smart_pots_v1';
+function loadPots(){
+    try { return JSON.parse((window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, POTS_KEY) || '[]'); } catch(e){ return []; }
+}
+function savePots(pots){
+    try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, POTS_KEY, JSON.stringify(pots)); } catch(e){}
+}
+function initPots(){
+    const createBtn = document.getElementById('createPotBtn');
+    const addBtn = document.getElementById('addToPotBtn');
+    renderPots();
+    if (createBtn) createBtn.addEventListener('click', createPot);
+    if (addBtn) addBtn.addEventListener('click', addToActivePot);
+}
+function createPot(){
+    const name = (document.getElementById('potName').value||'').trim();
+    const target = parseFloat(document.getElementById('potTarget').value)||0;
+    const deadline = document.getElementById('potDeadline').value||'';
+    if (!name || target<=0) { msgPot('Enter name and valid target', 'warn'); return; }
+    const pots = loadPots();
+    pots.push({ id: Date.now(), name, target, saved:0, deadline, active: pots.length===0, streak:0, lastDay:'' });
+    savePots(pots);
+    renderPots();
+    msgPot('Pot created ✅','ok');
+}
+function renderPots(){
+    const holder = document.getElementById('potsList'); if (!holder) return;
+    const pots = loadPots();
+    holder.innerHTML = pots.map(p => {
+        const pct = Math.min(100, Math.round((p.saved / Math.max(1,p.target)) * 100));
+        return `
+        <div class="p-3 rounded-lg bg-white/10 border border-white/10">
+            <div class="flex items-center justify-between">
+                <div class="text-white font-semibold">${p.name}</div>
+                <div class="text-purple-200 text-xs">${p.deadline ? p.deadline : ''}</div>
+            </div>
+            <div class="text-purple-200 text-sm">₹${p.saved.toFixed(0)} / ₹${p.target.toFixed(0)} • Streak: ${p.streak}d</div>
+            <div class="w-full bg-white/20 rounded-full h-2 mt-1">
+                <div class="bg-gradient-to-r from-emerald-500 to-green-600 h-2 rounded-full" style="width:${pct}%"></div>
+            </div>
+            <div class="mt-2 flex items-center justify-between">
+                <label class="text-xs text-white/80 flex items-center space-x-1">
+                    <input type="radio" name="activePot" ${p.active?'checked':''} data-id="${p.id}"> <span>Active</span>
+                </label>
+                <button class="text-red-300 text-xs" data-del="${p.id}">Remove</button>
+            </div>
+        </div>`;
+    }).join('');
+    // wire events
+    holder.querySelectorAll('input[name="activePot"]').forEach(r => r.addEventListener('change', () => setActivePot(parseInt(r.getAttribute('data-id')))) );
+    holder.querySelectorAll('button[data-del]').forEach(b => b.addEventListener('click', () => deletePot(parseInt(b.getAttribute('data-del')))) );
+}
+function setActivePot(id){
+    const pots = loadPots();
+    pots.forEach(p => p.active = (p.id===id));
+    savePots(pots);
+    renderPots();
+}
+function deletePot(id){
+    let pots = loadPots();
+    pots = pots.filter(p=>p.id!==id);
+    if (pots.length>0 && !pots.some(p=>p.active)) pots[0].active = true;
+    savePots(pots);
+    renderPots();
+}
+function addToActivePot(){
+    const amt = parseFloat(document.getElementById('potContribution').value)||0;
+    if (amt<=0) { msgPot('Enter a valid amount', 'warn'); return; }
+    const pots = loadPots();
+    const active = pots.find(p=>p.active);
+    if (!active) { msgPot('Create and select an active pot first', 'warn'); return; }
+    active.saved += amt;
+    // streak update
+    const today = new Date().toISOString().slice(0,10);
+    if (active.lastDay) {
+        const y = new Date(today); y.setDate(y.getDate()-1);
+        if (active.lastDay === y.toISOString().slice(0,10)) active.streak += 1; else if (active.lastDay !== today) active.streak = 1;
+    } else { active.streak = 1; }
+    active.lastDay = today;
+    savePots(pots);
+    renderPots();
+    msgPot('Added to pot ✅', 'ok');
+}
+function msgPot(text, type){
+    const el = document.getElementById('potMsg'); if (!el) return;
+    const style = type==='ok' ? 'bg-green-500/20 border-green-500/50' : 'bg-yellow-500/20 border-yellow-500/50';
+    el.className = `p-2 rounded-lg border mt-2 ${style}`;
+    el.textContent = text;
+    el.classList.remove('hidden');
+    setTimeout(()=> el.classList.add('hidden'), 2000);
+}
+
+function drawEt2Branches(canvas){
     const x = 300;
-    const startY = 260 - Math.random()*80;
-    const dir = Math.random() > 0.5 ? 1 : -1;
-    const length = 80 + Math.random()*40;
-    const endX = x + dir * length;
-    const endY = startY - 20 - Math.random()*30;
-    const path = svgEl('path', { d: `M ${x} ${startY} Q ${x+dir*40} ${startY-30}, ${endX} ${endY}`, stroke:'#5f3b15', 'stroke-width':'6', fill:'none', 'stroke-linecap':'round', opacity:'0' });
-    path.classList.add('et-branch');
-    path.setAttribute('data-week', weekKey);
-    canvas.appendChild(path);
-    animateIn(path);
+    const configs = [
+        { sy: 240, dir: 1, len: 110 },
+        { sy: 260, dir: -1, len: 120 },
+        { sy: 220, dir: 1, len: 90 },
+        { sy: 200, dir: -1, len: 100 }
+    ];
+    configs.forEach(c => {
+        const endX = x + c.dir * c.len;
+        const endY = c.sy - 30;
+        const path = svgEl('path', { d: `M ${x} ${c.sy} Q ${x + c.dir*50} ${c.sy-40}, ${endX} ${endY}`, stroke:'#5f3b15', 'stroke-width':'6', fill:'none', 'stroke-linecap':'round', opacity:'0' });
+        path.classList.add('et2-branch');
+        canvas.appendChild(path);
+        animateIn(path);
+    });
 }
 
-function addEtLeaf(canvas, instant) {
+function updateSavingsTreeSession() {
+    const canvas = document.getElementById('et2Canvas');
+    if (!canvas) return;
+    // Ensure structure exists even if called before init was complete
+    if (!canvas.querySelector('#et2-trunk')) {
+        initSavingsTreeSession();
+    }
+    // Compute spending for CURRENT MONTH only (non-savings)
+    const monthlyBase = monthlyBudget || 10000;
+    const now = new Date();
+    const monthSpent = expenses
+        .filter(e => e.category !== 'savings' && isSameMonthYear(new Date(e.date), now))
+        .reduce((s,e)=> s + (e.amount||0), 0);
+    const ratio = Math.max(0, Math.min(1, (monthlyBase - monthSpent) / monthlyBase));
+    const targetLeaves = Math.floor(TOTAL_LEAVES * ratio);
+
+    const existingLeaves = canvas.querySelectorAll('.et2-leaf').length;
+    if (existingLeaves < targetLeaves) {
+        for (let i=0;i<targetLeaves-existingLeaves;i++) addEt2Leaf(canvas, false);
+    } else if (existingLeaves > targetLeaves) {
+        for (let i=0;i<existingLeaves-targetLeaves;i++) removeEt2Leaf(canvas, false);
+    }
+
+    const spentEl = document.getElementById('et2Spent');
+    if (spentEl) spentEl.textContent = `₹${monthSpent.toFixed(2)}`;
+}
+
+function getTreeSessionStart() {
+    try {
+        const s = (window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, 'treeSinceLogin');
+        if (s) return new Date(s);
+    } catch (e) {}
+    const now = new Date();
+    try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, 'treeSinceLogin', now.toISOString()); } catch (e) {}
+    return now;
+}
+
+function isSameMonthYear(a, b) {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+}
+
+function addEt2Leaf(canvas, instant) {
     const cx = 260 + Math.random()*80 + (Math.random()>0.5? 80: -80) * Math.random();
     const cy = 160 + Math.random()*120;
     const leaf = svgEl('ellipse', { cx: cx, cy: cy, rx: 10, ry: 16, fill: randomLeafColor(), opacity: instant ? '1':'0' });
-    leaf.classList.add('et-leaf');
+    leaf.classList.add('et2-leaf');
     leaf.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))';
     canvas.appendChild(leaf);
     if (!instant) animateIn(leaf);
 }
 
-function removeEtLeaf(canvas, instant) {
-    const leaf = canvas.querySelector('.et-leaf');
+function removeEt2Leaf(canvas, instant) {
+    const leaf = canvas.querySelector('.et2-leaf');
     if (!leaf) return;
     if (instant) { canvas.removeChild(leaf); return; }
     leaf.style.transition = 'all 700ms ease';
@@ -406,16 +640,7 @@ function removeEtLeaf(canvas, instant) {
     setTimeout(()=>{ leaf.parentNode && leaf.parentNode.removeChild(leaf); }, 700);
 }
 
-function addEtBloom(canvas, bloomKey) {
-    const cx = 240 + Math.random()*120;
-    const cy = 120 + Math.random()*80;
-    const flower = svgEl('circle', { cx: cx, cy: cy, r: 0, fill: randomBloomColor(), opacity:'1' });
-    flower.setAttribute('data-bloom', bloomKey);
-    canvas.appendChild(flower);
-    flower.style.transition = 'all 600ms ease';
-    requestAnimationFrame(()=>{ flower.setAttribute('r','10'); });
-}
-
+// ---- SVG/Animation helpers ----
 function svgEl(tag, attrs){
     const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
     Object.entries(attrs||{}).forEach(([k,v])=> el.setAttribute(k, String(v)));
@@ -436,27 +661,4 @@ function animateIn(el){
 function randomLeafColor(){
     const greens = ['#22c55e','#16a34a','#10b981','#4ade80'];
     return greens[Math.floor(Math.random()*greens.length)];
-}
-function randomBloomColor(){
-    const colors = ['#f472b6','#f59e0b','#a78bfa','#60a5fa'];
-    return colors[Math.floor(Math.random()*colors.length)];
-}
-
-function toastEt(msg, type){
-    const box = document.getElementById('etStMsg');
-    if (!box) return;
-    const style = type==='success' ? 'bg-green-500/20 border-green-500/50' : 'bg-blue-500/20 border-blue-500/50';
-    box.className = `mt-3 p-3 rounded-lg border ${style}`;
-    box.textContent = msg;
-    box.classList.remove('hidden');
-    setTimeout(()=>{ box.classList.add('hidden'); }, 2500);
-}
-
-function getWeekKey(d){
-    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    const dayNum = date.getUTCDay() || 7;
-    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
-    const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1)/7);
-    return `${date.getUTCFullYear()}-W${weekNo}`;
 }

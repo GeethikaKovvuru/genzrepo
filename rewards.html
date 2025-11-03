@@ -147,6 +147,26 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Finance Quests -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🗺️ Finance Quests</h2>
+                    <div id="questsList" class="space-y-3">
+                        <!-- Quests will render here -->
+                    </div>
+                </div>
+
+                <!-- Community Finance Battles -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🏟️ Community Finance Battles</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                        <input id="cbName" type="text" placeholder="Your display name" class="p-3 rounded bg-white/20 text-white border border-white/30">
+                        <input id="cbScore" type="number" placeholder="Weekly savings score" class="p-3 rounded bg-white/20 text-white border border-white/30">
+                        <button id="cbSubmit" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded">Submit</button>
+                    </div>
+                    <div id="cbMsg" class="hidden p-2 rounded border mb-3"></div>
+                    <div id="cbBoard" class="space-y-2"></div>
+                </div>
             </div>
 
             <!-- Leaderboard -->
@@ -221,6 +241,41 @@
                         <div class="flex justify-between items-center">
                             <span class="text-purple-200">Total XP</span>
                             <span class="text-white font-bold">1,250</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulators -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mt-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🧪 Simulators</h2>
+                    <div class="space-y-4">
+                        <div class="p-3 rounded-lg bg-white/10 border border-white/10">
+                            <div class="text-white font-semibold mb-2">📈 Stock Simulator</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input id="simStockAmt" type="number" placeholder="Amount ₹" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                                <input id="simStockPct" type="number" placeholder="% Change" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                                <button id="simStockBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 rounded">Simulate</button>
+                            </div>
+                            <div id="simStockOut" class="text-purple-200 text-sm mt-2"></div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-white/10 border border-white/10">
+                            <div class="text-white font-semibold mb-2">💳 Credit Builder</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input id="simLimit" type="number" placeholder="Limit ₹" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                                <input id="simBalance" type="number" placeholder="Balance ₹" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                            </div>
+                            <button id="simCreditBtn" class="mt-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-2 rounded">Check Utilization</button>
+                            <div id="simCreditOut" class="text-purple-200 text-sm mt-2"></div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-white/10 border border-white/10">
+                            <div class="text-white font-semibold mb-2">🏠 Loan EMI</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input id="simLoanP" type="number" placeholder="Principal ₹" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                                <input id="simLoanR" type="number" placeholder="Rate % p.a" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                                <input id="simLoanN" type="number" placeholder="Months" class="p-2 rounded bg-white/20 text-white border border-white/30" />
+                            </div>
+                            <button id="simLoanBtn" class="mt-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-2 rounded">Compute EMI</button>
+                            <div id="simLoanOut" class="text-purple-200 text-sm mt-2"></div>
                         </div>
                     </div>
                 </div>

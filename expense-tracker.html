@@ -59,7 +59,11 @@
             </div>
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
                 <div class="text-purple-300 text-sm mb-2">Monthly Budget</div>
-                <div class="text-3xl font-bold text-white">₹10,000</div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-white text-xl">₹</span>
+                    <input id="budgetInput" type="number" min="1000" step="500" class="flex-1 p-2 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500" value="10000">
+                    <button id="saveBudgetBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg font-semibold">Save</button>
+                </div>
             </div>
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
                 <div class="text-purple-300 text-sm mb-2">Remaining Budget</div>
@@ -93,9 +97,32 @@
                             <label class="text-white mb-2 block">Date</label>
                             <input type="date" id="expenseDate" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
+                        <label class="flex items-center space-x-2 text-white/90 text-sm">
+                            <input type="checkbox" id="expenseEco" class="w-4 h-4 rounded border-white/30 bg-white/20 text-green-600 focus:ring-green-500 focus:ring-2">
+                            <span>Eco-friendly purchase 🌱</span>
+                        </label>
                         <button id="addExpenseBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition duration-300">
                             Add Expense
                         </button>
+                    </div>
+                </div>
+
+                <!-- Smart Savings Pots -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🐷 Smart Savings Pots</h2>
+                    <div class="space-y-3">
+                        <input id="potName" type="text" placeholder="Goal name (e.g., Goa Trip)" class="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input id="potTarget" type="number" placeholder="Target ₹" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                            <input id="potDeadline" type="date" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <button id="createPotBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transform transition">Create Pot</button>
+                        <div id="potsList" class="space-y-2"></div>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <input id="potContribution" type="number" placeholder="Add ₹ to active pot" class="p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/50">
+                            <button id="addToPotBtn" class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-3 rounded-lg font-semibold">Add</button>
+                        </div>
+                        <div id="potMsg" class="hidden p-2 rounded-lg border mt-2"></div>
                     </div>
                 </div>
 
@@ -107,6 +134,31 @@
                             <p class="text-white text-sm">💡 Save ₹500 this week to hit your goal!</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Eco-Tracker -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🌱 Eco-Tracker</h2>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="text-white">Green Coins</div>
+                            <div id="greenCoins" class="text-green-300 font-bold">0</div>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-2">
+                            <div id="greenProgress" class="bg-green-500 h-2 rounded-full" style="width:0%"></div>
+                        </div>
+                        <p class="text-purple-200 text-xs">1 coin per ₹100 of eco-friendly spend this month.</p>
+                    </div>
+                </div>
+
+                <!-- Finance Health Score -->
+                <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">🩺 Finance Health Score</h2>
+                    <div class="flex items-center justify-between">
+                        <div class="text-white text-4xl font-bold" id="healthScore">--</div>
+                        <div class="text-4xl" id="healthEmoji">🤔</div>
+                    </div>
+                    <p class="text-purple-200 text-xs mt-2" id="healthBreakdown"></p>
                 </div>
 
                 <!-- Peer Challenges -->
@@ -134,22 +186,22 @@
                     <canvas id="expenseChart" class="max-h-64"></canvas>
                 </div>
 
-                <!-- Savings Tree -->
+                <!-- Savings Tree (Animated) -->
                 <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-2xl font-bold text-white">🌳 Savings Tree</h2>
                         <div class="text-right">
-                            <div class="text-purple-200 text-sm">Total Saved</div>
-                            <div id="etStTotal" class="text-white font-bold">₹0</div>
+                            <div class="text-purple-200 text-sm">Spent This Month</div>
+                            <div id="et2Spent" class="text-white font-bold">₹0</div>
                         </div>
                     </div>
-                    <p class="text-purple-200 mb-4">As your money grows, your tree grows too.</p>
+                    <p class="text-purple-200 mb-4">Tree is full when monthly spend is ₹0. Leaves shed as spending grows.</p>
                     <div class="bg-gradient-to-b from-green-700/30 to-blue-700/20 rounded-2xl border border-white/10 p-4">
-                        <svg id="etTreeCanvas" viewBox="0 0 600 400" class="w-full h-96 rounded-xl bg-white/5"></svg>
+                        <svg id="et2Canvas" viewBox="0 0 600 400" class="w-full h-96 rounded-xl bg-white/5"></svg>
                     </div>
-                    <div class="mt-3 text-center text-white italic" id="etStQuote">“As your money grows, your tree grows too.”</div>
-                    <div id="etStMsg" class="hidden mt-3 p-3 rounded-lg border"></div>
                 </div>
+
+                
 
                 <!-- Expenses List -->
                 <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 mb-6">

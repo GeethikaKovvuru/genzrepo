@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const userInput = document.getElementById('userInput');
     const chatMessages = document.getElementById('chatMessages');
     const quickTipButtons = document.querySelectorAll('.quick-tip-btn');
+    const dailyTipBar = document.getElementById('dailyTipBar');
 
     // Send message on button click
     if (sendBtn) {
@@ -29,6 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
             handleQuickTip(tip);
         });
     });
+
+    // Daily Tip on first load per day
+    showDailyTipOnce();
 
     function sendMessage() {
         const message = userInput.value.trim();
@@ -111,6 +115,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const userName = window.Auth?.getStoredUserName?.() || '';
 
         // Check for keywords and generate appropriate responses
+        if (lowerMessage.startsWith('explain ')) {
+            return explainConcept(lowerMessage.replace('explain ','').trim(), userName);
+        }
+        if (lowerMessage.includes('daily tip')) {
+            return generateDailyTip(userName);
+        }
+        if (lowerMessage.includes('mirror') || lowerMessage.includes('emotion')) {
+            return generateFinanceMirror(userName);
+        }
         if (lowerMessage.includes('expense') || lowerMessage.includes('spending') || lowerMessage.includes('spent')) {
             return generateExpenseResponse(userName);
         } else if (lowerMessage.includes('save') || lowerMessage.includes('saving') || lowerMessage.includes('budget')) {
@@ -126,6 +139,23 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             return generateGenericResponse(userName);
         }
+    }
+
+    function showDailyTipOnce(){
+        if (!dailyTipBar) return;
+        try {
+            const key = 'finai_daily_tip_date';
+            const today = new Date().toISOString().slice(0,10);
+            const get = (window.Auth?.userStorage?.getItem||localStorage.getItem).bind(localStorage);
+            const set = (window.Auth?.userStorage?.setItem||localStorage.setItem).bind(localStorage);
+            const last = get(key);
+            if (last !== today) {
+                dailyTipBar.textContent = generateDailyTip(window.Auth?.getStoredUserName?.()||'');
+                dailyTipBar.classList.remove('hidden');
+                set(key, today);
+                setTimeout(()=> dailyTipBar.classList.add('hidden'), 8000);
+            }
+        } catch(e) {}
     }
 
     function readExpenses() {
@@ -203,6 +233,40 @@ document.addEventListener('DOMContentLoaded', function() {
             "We can set caps per category and send nudges when you’re close. Want that? 🔔"
         ];
         return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    function explainConcept(topic, userName){
+        const t = topic.toLowerCase();
+        if (t.includes('budget')) return "Budgeting 101: 50% needs, 30% wants, 20% savings. Track, cap, review weekly. Easy dubs. 💸";
+        if (t.includes('credit')) return "Credit basics: pay on time, keep utilization <30%, avoid hard pulls. Build slowly, flex later. 💳";
+        if (t.includes('loan')) return "Loans: know APR, term, and total interest. Pay extra toward principal when you can. Keep it light. 🏠";
+        if (t.includes('crypto')) return "Crypto vibes: DYOR, only risk what you can lose, diversify, use hardware wallets for size. 🔐";
+        return `Hit me with “explain budgeting/credit/loans/crypto” for a quick lowdown${userName?`, ${userName}`:''}.`;
+    }
+
+    function generateDailyTip(userName){
+        const tips = [
+            "Daily tip: Move ‘fun money’ to a separate wallet to avoid impulse spends.",
+            "Daily tip: Auto-transfer 10% on payday. Pay future-you first.",
+            "Daily tip: Unsubscribe from one unused service today. Tiny win, big energy.",
+            "Daily tip: Buy non-perishables in bulk; track unit prices."
+        ];
+        return (userName?`${userName}, `:'') + tips[Math.floor(Math.random()*tips.length)];
+    }
+
+    function generateFinanceMirror(userName){
+        const data = readExpenses();
+        if (!data.length) return "Mirror check: add a few expenses and I’ll spot patterns. 🪞";
+        // time-of-day pattern
+        const hours = data.map(e=>({h:new Date(e.date).getHours(), a:e.amount}));
+        const eveningSpend = hours.filter(x=>x.h>=18).reduce((s,x)=>s+x.a,0);
+        const morningSpend = hours.filter(x=>x.h<12).reduce((s,x)=>s+x.a,0);
+        const catTotals = Object.entries(summarizeExpenses(data).byCat).sort((a,b)=>b[1]-a[1]);
+        const topCat = catTotals[0]?.[0];
+        let msg = `Mirror says${userName?` ${userName}`:''}: `;
+        if (eveningSpend > morningSpend*1.2) msg += `you spend more in the evenings. Consider a 8pm spending guard. `;
+        if (topCat) msg += `Top category is ${prettifyCategory(topCat)} — want a soft cap + nudge? `;
+        return msg.trim() || "Mirror clean. No strong patterns yet. 🧼";
     }
 
     function handleQuickTip(tip) {

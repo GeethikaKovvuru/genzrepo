@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const badgeCards = document.querySelectorAll('.badge-card');
     const domainSelect = document.getElementById('quizDomain');
     const lengthSelect = document.getElementById('quizLength');
+    const questsList = document.getElementById('questsList');
 
     // Start Quiz Button
     if (startQuizBtn) {
@@ -76,7 +77,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Load XP per user
+    try {
+        const raw = (window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, 'userXP');
+        if (raw) userXP = parseInt(raw);
+    } catch(e){}
     updateXPProgress();
+
+    if (questsList) {
+        renderQuests();
+    }
+
+    // Simulators wiring
+    initSimulators();
+    initCommunityBattles();
 });
 
 function startQuiz(domain = 'general', length = 10) {
@@ -320,6 +334,7 @@ function updateXPProgress() {
     const nextLevelXP = xpPerLevel - currentLevelXP;
 
     document.getElementById('userXP').textContent = userXP.toLocaleString();
+    try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, 'userXP', String(userXP)); } catch(e){}
     document.getElementById('userLevel').textContent = Math.floor(userXP / xpPerLevel) + 1;
     document.getElementById('nextLevelXP').textContent = nextLevelXP;
     
@@ -331,5 +346,107 @@ function updateXPProgress() {
             percentageText.textContent = `${Math.round(progressPercentage)}%`;
         }
     }
+}
+
+// ===== Simulators =====
+function initSimulators(){
+    const stockBtn = document.getElementById('simStockBtn');
+    const creditBtn = document.getElementById('simCreditBtn');
+    const loanBtn = document.getElementById('simLoanBtn');
+
+    stockBtn?.addEventListener('click', function(){
+        const amt = parseFloat(document.getElementById('simStockAmt').value)||0;
+        const pct = parseFloat(document.getElementById('simStockPct').value)||0;
+        const out = document.getElementById('simStockOut');
+        const res = amt * (1 + pct/100);
+        out.textContent = `Result: ₹${res.toFixed(2)} (${pct>=0?'+':''}${pct.toFixed(2)}%)`;
+    });
+
+    creditBtn?.addEventListener('click', function(){
+        const limit = parseFloat(document.getElementById('simLimit').value)||1;
+        const bal = parseFloat(document.getElementById('simBalance').value)||0;
+        const out = document.getElementById('simCreditOut');
+        const util = Math.min(100, Math.max(0, (bal/Math.max(1,limit))*100));
+        let msg = `Utilization: ${util.toFixed(1)}%`;
+        if (util<=30) msg += ' ✅ Ideal'; else if (util<=50) msg += ' ⚠️ Bring below 30%'; else msg += ' ❌ Too high';
+        out.textContent = msg;
+    });
+
+    loanBtn?.addEventListener('click', function(){
+        const P = parseFloat(document.getElementById('simLoanP').value)||0;
+        const r = (parseFloat(document.getElementById('simLoanR').value)||0) / 1200;
+        const n = parseInt(document.getElementById('simLoanN').value)||1;
+        const out = document.getElementById('simLoanOut');
+        if (r===0) { out.textContent = `EMI: ₹${(P/n).toFixed(2)}`; return; }
+        const emi = P * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+        out.textContent = `EMI: ₹${emi.toFixed(2)}`;
+    });
+}
+
+// ===== Community Battles (global leaderboard) =====
+function initCommunityBattles(){
+    const submit = document.getElementById('cbSubmit');
+    const board = document.getElementById('cbBoard');
+    const msg = document.getElementById('cbMsg');
+    const KEY = 'community_battles_v1';
+    function load(){ try { return JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){ return []; } }
+    function save(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(e){} }
+    function render(){ const list = load().sort((a,b)=> (b.score||0)-(a.score||0)).slice(0,20); board.innerHTML = list.map((e,i)=>`<div class="p-3 rounded bg-white/10 border border-white/10 flex items-center justify-between"><div class="text-white">#${i+1} ${e.name}</div><div class="text-green-300 font-semibold">${e.score}</div></div>`).join('') || '<p class="text-purple-200">No entries yet.</p>'; }
+    function show(text, ok){ if(!msg) return; msg.className=`hidden p-2 rounded border mb-3 ${ok?'bg-green-500/20 border-green-500/50':'bg-yellow-500/20 border-yellow-500/50'}`; msg.textContent=text; msg.classList.remove('hidden'); setTimeout(()=>msg.classList.add('hidden'),2000); }
+    submit?.addEventListener('click', function(){ const n=(document.getElementById('cbName').value||'').trim(); const s=parseInt(document.getElementById('cbScore').value)||0; if(!n||s<=0){ show('Enter name and positive score','warn'); return; } const list=load(); list.push({ name:n, score:s, ts: Date.now() }); save(list); render(); show('Submitted ✅', true); });
+    render();
+}
+
+// ===== Quests =====
+const QUESTS_KEY = 'finance_quests_v1';
+const DEFAULT_QUESTS = [
+    { id:'q_survive_10k', title:'Survive the Month on ₹10,000', desc:'Track every spend and stay under ₹10k this month.', xp:300, done:false },
+    { id:'q_escape_debt', title:'Escape Debt Trap', desc:'Add 3 “bills” payments this month and keep total down from last month.', xp:400, done:false },
+    { id:'q_invest_7d', title:'Invest Smart in 7 Days', desc:'Complete 7 quizzes in Investing domain this week.', xp:350, done:false }
+];
+
+function loadQuests(){
+    try {
+        const raw = (window.Auth?.userStorage?.getItem||localStorage.getItem).call(localStorage, QUESTS_KEY);
+        return raw ? JSON.parse(raw) : DEFAULT_QUESTS;
+    } catch(e){ return DEFAULT_QUESTS; }
+}
+function saveQuests(qs){
+    try { (window.Auth?.userStorage?.setItem||localStorage.setItem).call(localStorage, QUESTS_KEY, JSON.stringify(qs)); } catch(e){}
+}
+
+function renderQuests(){
+    const holder = document.getElementById('questsList');
+    if (!holder) return;
+    const qs = loadQuests();
+    holder.innerHTML = qs.map(q => `
+        <div class="p-4 rounded-xl bg-white/10 border border-white/10 flex items-center justify-between">
+            <div>
+                <div class="text-white font-semibold">${q.title}</div>
+                <div class="text-purple-200 text-sm">${q.desc}</div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-yellow-300 text-sm">${q.xp} XP</span>
+                ${q.done ? '<span class="text-green-400 font-semibold">Completed</span>' : `<button class="mark-quest px-3 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white" data-id="${q.id}">Mark Done</button>`}
+            </div>
+        </div>
+    `).join('');
+    holder.querySelectorAll('.mark-quest').forEach(btn => {
+        btn.addEventListener('click', ()=> completeQuest(btn.getAttribute('data-id')));
+    });
+}
+
+function completeQuest(id){
+    const qs = loadQuests();
+    const q = qs.find(x=>x.id===id);
+    if (!q || q.done) return;
+    q.done = true;
+    // grant XP
+    userXP += q.xp;
+    updateXPProgress();
+    saveQuests(qs);
+    renderQuests();
+    triggerConfetti();
+    showBadgeMessage(`Quest completed: ${q.title} (+${q.xp} XP)`);
 }
 
